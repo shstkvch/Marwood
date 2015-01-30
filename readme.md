@@ -28,6 +28,7 @@ Near future:
 * Page breaking, automatic (CONT'D)s etc
 * PDF rendering (maybe with pdf.js?)
 * Zoom
+* Autocomplete for character names & locations
 * File load functionality (!)
 * Some kind of login system so I can work on scripts with my writing partner without faffing around sending emails to each other at 5am
 
