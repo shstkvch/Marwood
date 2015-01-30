@@ -135,7 +135,7 @@ body {
 		}
 		div.character-chooser {
 			background: darken($main-tone, 5%);
-			width: 300px;
+			width: 200px;
 			position: fixed;
 			bottom: 55px;
 			right: 55px;
@@ -190,7 +190,7 @@ body {
 				position: relative;
 
 				&:after {
-					content: attr(data-ghost-text);
+					//content: attr(data-ghost-text);
 					position: absolute;
 					opacity: .5;
 					left: 0;

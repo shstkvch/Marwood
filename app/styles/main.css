@@ -2653,7 +2653,7 @@ body {
         color: #ff8f44; }
 .wrapper div.hud div.character-chooser {
   background: #101010;
-  width: 300px;
+  width: 200px;
   position: fixed;
   bottom: 55px;
   right: 55px; }
@@ -2681,7 +2681,6 @@ body {
       text-align: left;
       position: relative; }
       .wrapper div.pages .page p:after {
-        content: attr(data-ghost-text);
         position: absolute;
         opacity: 0.5;
         left: 0; }
