@@ -1,16 +1,23 @@
 // bower:scss
 // endbower
+$fa-font-path: "../bower_components/fontawesome/fonts" !default;
+
 @import "../bower_components/foundation/scss/foundation/components/grid";
+@import "../bower_components/fontawesome/scss/font-awesome.scss";
 
 // Custom imports & styles here.
 
 // constants
-$main-tone: rgb(44,44,44);
+$main-tone: darken(rgb(44,44,44), 6%);
+$primary-text-colour: darken(#fff, 10%);
+$highlight-tone: #DD5C00;
+$highlight-tone-alt: #003EDD;
 
 body {
 	background: $main-tone;
-	color: #fff;
+	color: darken(#fff, 20%);
 	-webkit-font-smoothing: antialiased;
+	color: #fff;
 }
 
 .wrapper {
@@ -22,8 +29,13 @@ body {
 		background: $main-tone;
 		height: 70px;
 		border-bottom: 1px solid rgb(84,84,84);
+		z-index: 999999;
+		max-width: 100% !important;
+
+		@include grid-row();
 
 		.script-meta {
+			@include grid-column($columns: 4);
 			h1 {
 				text-align: center;
 				color: #fff;
@@ -33,11 +45,108 @@ body {
 				font-weight: bold;
 			}
 		}
+
+		.toolbar {
+			@include grid-column($columns: 4);
+
+			a.toolbar-button {
+				width: 70px;
+				height: 70px;
+				background: none;
+				display: block;
+				text-align: center;
+				padding-top: 20px;
+				float: right;
+				border-left: 1px solid rgb(84,84,84);
+				border-right: 1px solid rgb(84,84,84);
+				color: rgb(84,84,84);
+
+				&:hover {
+					color: #fff;
+				}
+			}
+		}
+	}
+
+	// 'HUD' elements (stuff that fades in and out)
+	div.hud {
+		div.chooser {
+			background: darken($main-tone, 5%);
+			z-index: 999999;
+			border-radius: 3px;
+			overflow: hidden;
+			display: none;
+			position: fixed;
+
+			ul {
+				list-style-type: none;
+				margin: 10px 0;
+				li {
+					margin: 0;
+					padding: 10px;
+
+					&.highlight {
+						background: $highlight-tone;
+						font-weight: bold;
+						height: 45px;
+						font-weight: bold;
+						height: 45px;
+						padding-left: 20px;
+						transition: padding-left .2s;
+					}
+
+					a {
+						color: #fff;
+					}
+				}
+			}
+
+			p.help {
+				color: rgb(150,150,150);
+				padding: 10px;
+				border-bottom: 1px solid lighten($main-tone, 20%);
+				margin-bottom: 0;
+				font-size: 1rem;
+			}
+
+		}
+		div.element-chooser {
+			width: 300px;
+			bottom: 55px;
+			left: 55px;
+
+			ul {
+				list-style-type: none;
+				li {
+					margin: 0;
+					padding: 10px;
+
+					a {
+						color: #fff;
+					}
+
+					&.highlight {
+						background: $highlight-tone;
+					}
+				}
+			}
+		}
+		div.character-chooser {
+			background: darken($main-tone, 5%);
+			width: 300px;
+			position: fixed;
+			bottom: 55px;
+			right: 55px;
+
+			ul li.highlight {
+				background: $highlight-tone-alt;
+			}
+		}
 	}
 
 	// the main wrapper of all the pages
 	div.pages {
-		margin-top: 70px;
+		margin: 70px auto;
 
 		// an individual page
 		.page {
@@ -58,43 +167,76 @@ body {
 			width: $a4-width * $page-scale;
 			height: $a4-height * $page-scale;
 
+			meta.maximum-inner-height {
+				height: ($a4-height * $page-scale) - 2 * ($one-inch * .9);
+			}
+
 			// elements
 			&, p {
 				font-size: $font-size * $page-scale;
 				font-family: Courier, monospace;
 				line-height: 200%;
 				outline: none;
+				color: $primary-text-colour;
 			}
+
 			p {
 				margin: 0;
 				margin-bottom: $one-inch / 6;
 				text-align: left;
-				border: 1px solid transparent;
+				position: relative;
 
-				&:focus, &:active {
-					border: 1px dashed lighten($main-tone, 10%);
+				&:after {
+					content: attr(data-ghost-text);
+					position: absolute;
+					opacity: .5;
+					left: 0;
 				}
 			}
 
-			p.scene-heading {
-				font-weight: bold;
-				border-bottom: (1px * $page-scale) solid #fff;
-				padding-bottom: $one-inch / 6;
+			p.ghost {
+				// ghost elements are used for autocomplete
+				opacity: .5;
 			}
 
-			p.action {
-				padding-left: 0 * $one-inch;
-				padding-right: 0 * $one-inch;
+			p.scene-heading, p.scene-heading:after {
+				font-weight: bold !important;
+				//border-bottom: (1px * $page-scale) solid $primary-text-colour !important;
+				//padding-bottom: $one-inch / 6 !important;
+				text-transform: uppercase;
 			}
-			p.character {
-				font-weight: bold;
-				padding-left: 2 * $one-inch;
-				padding-right: 0 * $one-inch;
+
+			p.action, p.action:after {
+				padding-left: 0 * $one-inch !important;
+				padding-right: 0 * $one-inch !important;
+			}
+
+			p.character, p.character:after {
+				font-weight: bold !important;
+				padding-left: 2 * $one-inch !important;
+				padding-right: 0 * $one-inch !important;
+				margin-bottom: 0 !important;
+				text-transform: uppercase;
+			}
+
+			p.dialogue, p.dialogue:after {
+				padding-left: 1 * $one-inch !important;
+				padding-right: 1 * $one-inch !important;
+			}
+
+			p.parenthetical, p.parenthetical:after {
+				padding-left: 1.5 * $one-inch !important;
+				padding-right: 0 * $one-inch !important;
 				margin-bottom: 0;
 			}
-			p.dialogue {
-				padding-left: 1 * $one-inch;
-				padding-right: 1 * $one-inch;
+
+			p.transition, p.transition:after {
+				// right padding might be slightly off vs Final Draft
+				text-align: right;
+			}
+
+			p.shot, p.shot:after {
+				text-transform: uppercase;
 			}
 		}
 	}

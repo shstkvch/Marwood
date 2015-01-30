@@ -28,21 +28,43 @@
 
     <div class="wrapper">
         <header>
+            <nav class="toolbar">
+              &nbsp;
+            </nav>
             <div class="script-meta">
-              <h1>Joe the Poorly Designed Robot and Friends</h1>
+              <h1>Knowing Me, Knowing You: Episode One</h1>
             </div>
+            <nav class="toolbar">
+              <a href="#" class="save toolbar-button"><i class="fa fa-save fa-2x"></i></a>
+            </nav>
         </header>
+        <div class="hud">
+          <div class="element-chooser chooser">
+            <p class="help">Switch elements with the TAB key</p>
+            <ul>
+              <li class="general">General</li>
+              <li class="action">Action</li>
+              <li class="character">Character</li>
+              <li class="dialogue">Dialogue</li>
+              <li class="parenthetical">Parenthetical</li>
+              <li class="scene-heading">Scene Heading</li>
+              <li class="transition">Transition</li>
+              <li class="shot">Shot</li>
+            </ul>
+          </div>
+          <div class="character-chooser chooser">
+            <p class="help">Switch characters with the ALT key</p>
+            <ul>
+              <li>Captain Peters</li>
+              <li>Gregor Adam</li>
+              <li>Chef Wendy</li>
+            </ul>
+          </div>
+        </div>
         <div class="pages">
-            <div class="page">
-                <p class="scene-heading">Int. Workshop - day</p>
-                <p class="action">Joe the Poorly Designed Robot walks into the room and looks at the ground.</p>
-                <p class="character">Joe Robot</p>
-                <p class="dialogue">I really wish I knew how to look at something other than the floor. Alas, my neck was poorly designed.</p>
-                <p class="action">Enter Smith McGee</p>
-                <p class="character">Smith McGee</p>
-                <p class="dialogue">What are you doing, Joe the Poorly Designed Robot?</p>
-                <p class="character">Joe Robot</p>
-                <p class="dialogue">Oh fuck off Smith McGee</p>
+            <div class="page" contenteditable="true">
+                <meta class="maximum-inner-height">
+                <p class="scene-heading highlight">INT. Living room - day</p>
             </div>
         </div>
     </div>
@@ -78,6 +100,7 @@
     <!-- endbuild -->
 
     <!-- build:js scripts/main.js -->
+    <script src="scripts/filesaver.js"></script>
     <script src="scripts/main.js"></script>
     <!-- endbuild -->
 </body>
