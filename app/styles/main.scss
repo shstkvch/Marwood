@@ -1,0 +1,101 @@
+// bower:scss
+// endbower
+@import "../bower_components/foundation/scss/foundation/components/grid";
+
+// Custom imports & styles here.
+
+// constants
+$main-tone: rgb(44,44,44);
+
+body {
+	background: $main-tone;
+	color: #fff;
+	-webkit-font-smoothing: antialiased;
+}
+
+.wrapper {
+	header {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		background: $main-tone;
+		height: 70px;
+		border-bottom: 1px solid rgb(84,84,84);
+
+		.script-meta {
+			h1 {
+				text-align: center;
+				color: #fff;
+				font-size: 1rem;
+				margin: 1.5rem 0;
+				color: rgb(120,120,120);
+				font-weight: bold;
+			}
+		}
+	}
+
+	// the main wrapper of all the pages
+	div.pages {
+		margin-top: 70px;
+
+		// an individual page
+		.page {
+			//border: 1px solid rgb(84,84,84);
+			border-top: 0;
+			margin: auto;
+
+			$a4-width: 595px;
+			$a4-height: 842px;
+
+			$font-size: 12px;
+
+			$page-scale: 1.5;
+			$one-inch: ($a4-width / 8) * $page-scale;
+
+			padding: $one-inch * .9 $one-inch * 1.5;
+
+			width: $a4-width * $page-scale;
+			height: $a4-height * $page-scale;
+
+			// elements
+			&, p {
+				font-size: $font-size * $page-scale;
+				font-family: Courier, monospace;
+				line-height: 200%;
+				outline: none;
+			}
+			p {
+				margin: 0;
+				margin-bottom: $one-inch / 6;
+				text-align: left;
+				border: 1px solid transparent;
+
+				&:focus, &:active {
+					border: 1px dashed lighten($main-tone, 10%);
+				}
+			}
+
+			p.scene-heading {
+				font-weight: bold;
+				border-bottom: (1px * $page-scale) solid #fff;
+				padding-bottom: $one-inch / 6;
+			}
+
+			p.action {
+				padding-left: 0 * $one-inch;
+				padding-right: 0 * $one-inch;
+			}
+			p.character {
+				font-weight: bold;
+				padding-left: 2 * $one-inch;
+				padding-right: 0 * $one-inch;
+				margin-bottom: 0;
+			}
+			p.dialogue {
+				padding-left: 1 * $one-inch;
+				padding-right: 1 * $one-inch;
+			}
+		}
+	}
+}
