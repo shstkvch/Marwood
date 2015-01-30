@@ -2615,7 +2615,6 @@ body {
   z-index: 999999;
   border-radius: 3px;
   overflow: hidden;
-  display: none;
   position: fixed; }
   .wrapper div.hud div.chooser ul {
     list-style-type: none;
@@ -2624,7 +2623,6 @@ body {
       margin: 0;
       padding: 10px; }
       .wrapper div.hud div.chooser ul li.highlight {
-        background: #DD5C00;
         font-weight: bold;
         height: 45px;
         font-weight: bold;
@@ -2638,9 +2636,10 @@ body {
     padding: 10px;
     border-bottom: 1px solid #505050;
     margin-bottom: 0;
-    font-size: 1rem; }
+    font-size: 1rem;
+    text-align: center; }
 .wrapper div.hud div.element-chooser {
-  width: 300px;
+  width: 200px;
   bottom: 55px;
   left: 55px; }
   .wrapper div.hud div.element-chooser ul {
@@ -2651,7 +2650,7 @@ body {
       .wrapper div.hud div.element-chooser ul li a {
         color: #fff; }
       .wrapper div.hud div.element-chooser ul li.highlight {
-        background: #DD5C00; }
+        color: #ff8f44; }
 .wrapper div.hud div.character-chooser {
   background: #101010;
   width: 300px;
@@ -2659,7 +2658,7 @@ body {
   bottom: 55px;
   right: 55px; }
   .wrapper div.hud div.character-chooser ul li.highlight {
-    background: #003EDD; }
+    color: #4479ff; }
 .wrapper div.pages {
   margin: 70px auto; }
   .wrapper div.pages .page {
@@ -2708,6 +2707,8 @@ body {
       padding-right: 0px !important;
       margin-bottom: 0; }
     .wrapper div.pages .page p.transition, .wrapper div.pages .page p.transition:after {
-      text-align: right; }
+      text-align: right;
+      left: auto;
+      right: 0; }
     .wrapper div.pages .page p.shot, .wrapper div.pages .page p.shot:after {
       text-transform: uppercase; }

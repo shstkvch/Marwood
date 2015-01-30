@@ -12,7 +12,7 @@ $(function() {
 	// every keyup in the editor
 	$("div.page").keydown(function(e) {
 		// establish what element we're in
-		var $dom_element = $(document.getSelection().anchorNode.parentNode);
+		var $dom_element = getActiveDomElement();
 		var element_type = $dom_element.attr("class");
 
 		// override default tab behaviour
@@ -20,10 +20,10 @@ $(function() {
 			e.preventDefault();
 
 			// if the element we're on is blank, do the switcheroo!
-			if($dom_element.text().trim() == "") {
+			if($dom_element.text().trim().replace("&#8203;", "")) {
 				switchElementType(e.shiftKey); // if shift is down then we go backwards
 			} else {
-				console.log("not switching element type", $dom_element.text().trim());
+				console.log("not switching element type",  "\"", $dom_element.text().trim().replace("&#8203;", ""), "\"");
 				console.log($dom_element);
 			}
 		}
@@ -33,31 +33,60 @@ $(function() {
 			e.preventDefault();
 
 			var new_element_type = "action"; // the default
+			var element_to_insert_after = $dom_element; // defaults to the last element
 
 			// vary the new element based on what element we're currently in
-			if(element_type == "character") {
-				new_element_type = "dialogue";
-				last_character_name = $dom_element.text();
 
-				// if the next element in the dom is already a dialogue, just jump
-				// into that dialogue element rather than creating a new element
-				if($dom_element.next().hasClass("dialogue")) {
-					focusOnElement($dom_element.next());
-					return false;
+			if(element_type == "character") {
+				// after a character, insert a dialogue UNLESS we already have one
+				// if we have one already, insert a parenthetical
+
+				if($dom_element.next().attr("class") == "dialogue") {
+					new_element_type = "parenthetical";
+
+				} else {
+					new_element_type = "dialogue";
 				}
+
+			} else if (element_type == "parenthetical") {
+				// after a parenthetical, insert a dialogue
+
+				new_element_type = "dialogue";
+
+			} else if (element_type == "dialogue") {
+				// after a dialogue, insert an action
+				// UNLESS we had another character two elements ago (i.e. it's a
+				// conversation between two characters
+
+				if($dom_element.prev().prev().attr('class') == "dialogue") {
+					new_element_type = "character";
+
+				} else {
+					// it's not a conversation, just default to action
+					console.log('Not in a conversation');
+
+					new_element_type = "action";
+				}
+
+			} else if (element_type == "action") {
+				// after an action, insert a character
+
+				new_element_type = "character";
 			}
 
-			if($dom_element.text().trim() != "") {
-				createNewElement(new_element_type);
+			console.log($dom_element.text().trim().replace("&#8203;", "") == "");
+
+			if($dom_element.text().trim().replace("&#8203;", "") != "") {
+				createNewElement(new_element_type, element_to_insert_after);
 			}
 
 			// todo: ghost autocomplete selection
 		}
 	});
 
-	$("div.page").keyup(function(e) {
+	$("div.page").on('keydown focus click', function(e) {
 		// establish what element we're in
-		var $dom_element = $(document.getSelection().anchorNode.parentNode);
+		var $dom_element = getActiveDomElement();
 		var element_type = $dom_element.attr("class");
 
 		/// GENERAL ///
@@ -68,20 +97,11 @@ $(function() {
 			checkElementsExist();
 		}
 
-		if (element_type == "scene-heading") {
-			/// SCENE HEADING ///
-		} else if (element_type == "character") {
-			/// CHARACTER ///
-		} else if (element_type == "dialogue") {
-			/// DIALOGUE ///
-		} else if (element_type == "action") {
-			/// ACTION ///
-		} else {
-			// possibly a fuckup
-		}
+		// update the active element type
+		active_element_type = element_types.indexOf(element_type);
+		flashElementHud();
 
-		console.log(e.which);
-
+		console.log($dom_element.html());
 	});
 
 	$('div.page').change(function() {
@@ -90,7 +110,7 @@ $(function() {
 		// move as much as possible to the next page.
 
 		if(checkPageInnerHeight(this)) {
-
+			// ...
 		}
 	});
 
@@ -129,12 +149,10 @@ $(function() {
 
 	function switchElementType(reverse) {
 		// TODO: consolidate these $dom_element lines into a function?
-		var $dom_element = $(document.getSelection().anchorNode.parentNode);
 
+		var $dom_element = getActiveDomElement();
 		// FIXME: element chooser fades out too quickly if you hold tab down and
 		//				cycle rapidly
-
-		$("div.hud .element-chooser").stop(true, true).show();
 
 		if(reverse) {
 			var step = -1;
@@ -142,33 +160,58 @@ $(function() {
 			var step = 1;
 		}
 
-		active_element_type = (active_element_type + step) % element_types.length;
+		setActiveElementIndex(active_element_type + step);
+		flashElementHud();
+	}
 
-		$("div.hud .element-chooser li").removeClass("highlight");
-		$("div.hud .element-chooser li:eq(" + active_element_type + ")").addClass("highlight");
+	function setActiveElementIndex(element_index) {
+		// set the active element based on the numerical index of the element
+		// i.e. "GENERAL" is "3"
+		//
+		// returns the text name of the element type
 
-		$("div.hud .element-chooser").delay(1000).fadeOut(2000);
+		var $dom_element = getActiveDomElement();
 
-		$dom_element.attr("class", element_types[active_element_type]);
-		console.log(element_types[active_element_type]);
+		active_element_type = element_index % element_types.length;
+		if (active_element_type == -1) {
+			// there's probably a cleaner way of doing this but it's simple
+
+			active_element_type = element_types.length - 1;
+		}
+
+		console.log(active_element_type);
+
+		$dom_element.attr("class", element_types[element_index]);
 
 		// special case ghosting etc
 		var new_ghost_text = "";
-		if(element_types[active_element_type] == "character") {
+		if(element_types[element_index] == "character") {
 			new_ghost_text = "Captain Peters";
-		} else if (element_types[active_element_type] == "scene-heading") {
+		} else if (element_types[element_index] == "scene-heading") {
 			new_ghost_text = "INT. Bridge - Day";
+		} else if (element_types[element_index] == "transition") {
+			new_ghost_text = "CUT TO:";
 		}
 
 		$dom_element.attr("data-ghost-text", new_ghost_text);
+
+		return element_types[element_index];
+	}
+
+	function flashElementHud() {
+		// flash the elements heads up display
+
+		//$("div.hud .element-chooser").stop(true, true).show();
+		$("div.hud .element-chooser li").removeClass("highlight");
+		$("div.hud .element-chooser li:eq(" + active_element_type + ")").addClass("highlight");
+		//$("div.hud .element-chooser").fadeOut(2000);
 	}
 
 	function checkElementsExist() {
 		// make sure the user is typing into an element... if not
 		// then we need to make a new element
 
-		var $dom_element = $(document.getSelection().anchorNode.parentNode);
-
+		var $dom_element = getActiveDomElement();
 		if($dom_element.hasClass("pages")) {
 			// christ! it's fucked up! create a new action element...
 			createNewElement("action");
@@ -176,32 +219,46 @@ $(function() {
 		}
 	}
 
-	function createNewElement(new_element_type) {
+	function createNewElement(new_element_type, $element_to_insert_after) {
 		// create a new element of the specified type & punt it into
 		// the page
+		var text_override = ""; // text to set for the new element
 
 		if(!new_element_type) {
 			new_element_type = "action";
 		}
 
-		var $dom_element = $(document.getSelection().anchorNode.parentNode);
+		var $dom_element = getActiveDomElement();
 
 		// create the new element
 		$new_element = $(document.createElement("p"));
 
 		// pop it into the dom
-		$('div.page').append($new_element);
+		$element_to_insert_after.after($new_element);
+
+		// special case stuff
+		if(new_element_type == "parenthetical") {
+			text_override = "()";
+		}
 
 		// todo - switch back to last used character from dialogue
 
 		// set the element class
 		$new_element.addClass(new_element_type);
 
-		// ... and add a nbsp so it works ...
-		$new_element.html('&nbsp;');
+		if(!text_override) {
+			// ... and add an invisible character so blank elements work ...
+			text_override = "&#8203;";
+		}
+
+		$new_element.html(text_override);
 
 		// wahay!
 		focusOnElement($new_element);
+
+		// now update the active element index and flash the HUD
+		active_element_type = element_types.indexOf(new_element_type);
+		flashElementHud();
 
 		return $new_element;
 	}
@@ -256,6 +313,20 @@ $(function() {
 		saveAs(blob, script_title + '.terry');
 	}
 
+	function getActiveDomElement() {
+		var $dom_element = $(document.getSelection().anchorNode.parentNode);
+
+		if($dom_element.hasClass('page')) {
+			// it's cocked up, don't send the parent element -- send the
+			// child instead.
+			//
+			// this seems to happen if an element has no text
+			$dom_element = $(document.getSelection().anchorNode);
+		}
+
+		return $dom_element;
+	}
+
 	// save button
 	$('a.toolbar-button.save').click(function() {
 		saveScript();
@@ -276,146 +347,3 @@ $('body').on('focus', '[contenteditable]', function() {
 		}
 		return $this;
 });
-
-// base64 encoder
-/**
-*
-*  Base64 encode / decode
-*  http://www.webtoolkit.info/
-*
-**/
-var Base64 = {
-
-// private property
-_keyStr : "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
-
-// public method for encoding
-encode : function (input) {
-		var output = "";
-		var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-		var i = 0;
-
-		input = Base64._utf8_encode(input);
-
-		while (i < input.length) {
-
-				chr1 = input.charCodeAt(i++);
-				chr2 = input.charCodeAt(i++);
-				chr3 = input.charCodeAt(i++);
-
-				enc1 = chr1 >> 2;
-				enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-				enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-				enc4 = chr3 & 63;
-
-				if (isNaN(chr2)) {
-						enc3 = enc4 = 64;
-				} else if (isNaN(chr3)) {
-						enc4 = 64;
-				}
-
-				output = output +
-				this._keyStr.charAt(enc1) + this._keyStr.charAt(enc2) +
-				this._keyStr.charAt(enc3) + this._keyStr.charAt(enc4);
-
-		}
-
-		return output;
-},
-
-// public method for decoding
-decode : function (input) {
-		var output = "";
-		var chr1, chr2, chr3;
-		var enc1, enc2, enc3, enc4;
-		var i = 0;
-
-		input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-
-		while (i < input.length) {
-
-				enc1 = this._keyStr.indexOf(input.charAt(i++));
-				enc2 = this._keyStr.indexOf(input.charAt(i++));
-				enc3 = this._keyStr.indexOf(input.charAt(i++));
-				enc4 = this._keyStr.indexOf(input.charAt(i++));
-
-				chr1 = (enc1 << 2) | (enc2 >> 4);
-				chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-				chr3 = ((enc3 & 3) << 6) | enc4;
-
-				output = output + String.fromCharCode(chr1);
-
-				if (enc3 != 64) {
-						output = output + String.fromCharCode(chr2);
-				}
-				if (enc4 != 64) {
-						output = output + String.fromCharCode(chr3);
-				}
-
-		}
-
-		output = Base64._utf8_decode(output);
-
-		return output;
-
-},
-
-// private method for UTF-8 encoding
-_utf8_encode : function (string) {
-		string = string.replace(/\r\n/g,"\n");
-		var utftext = "";
-
-		for (var n = 0; n < string.length; n++) {
-
-				var c = string.charCodeAt(n);
-
-				if (c < 128) {
-						utftext += String.fromCharCode(c);
-				}
-				else if((c > 127) && (c < 2048)) {
-						utftext += String.fromCharCode((c >> 6) | 192);
-						utftext += String.fromCharCode((c & 63) | 128);
-				}
-				else {
-						utftext += String.fromCharCode((c >> 12) | 224);
-						utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-						utftext += String.fromCharCode((c & 63) | 128);
-				}
-
-		}
-
-		return utftext;
-},
-
-// private method for UTF-8 decoding
-_utf8_decode : function (utftext) {
-		var string = "";
-		var i = 0;
-		var c = c1 = c2 = 0;
-
-		while ( i < utftext.length ) {
-
-				c = utftext.charCodeAt(i);
-
-				if (c < 128) {
-						string += String.fromCharCode(c);
-						i++;
-				}
-				else if((c > 191) && (c < 224)) {
-						c2 = utftext.charCodeAt(i+1);
-						string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-						i += 2;
-				}
-				else {
-						c2 = utftext.charCodeAt(i+1);
-						c3 = utftext.charCodeAt(i+2);
-						string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-						i += 3;
-				}
-
-		}
-
-		return string;
-}
-
-}

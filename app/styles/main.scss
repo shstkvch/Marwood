@@ -10,8 +10,8 @@ $fa-font-path: "../bower_components/fontawesome/fonts" !default;
 // constants
 $main-tone: darken(rgb(44,44,44), 6%);
 $primary-text-colour: darken(#fff, 10%);
-$highlight-tone: #DD5C00;
-$highlight-tone-alt: #003EDD;
+$highlight-tone: lighten(#DD5C00, 20%);
+$highlight-tone-alt: lighten(#003EDD, 20%);
 
 body {
 	background: $main-tone;
@@ -75,7 +75,7 @@ body {
 			z-index: 999999;
 			border-radius: 3px;
 			overflow: hidden;
-			display: none;
+			// display: none;
 			position: fixed;
 
 			ul {
@@ -86,7 +86,7 @@ body {
 					padding: 10px;
 
 					&.highlight {
-						background: $highlight-tone;
+						//background: linear-gradient(lighten($highlight-tone, 15%), $highlight-tone);
 						font-weight: bold;
 						height: 45px;
 						font-weight: bold;
@@ -107,11 +107,12 @@ body {
 				border-bottom: 1px solid lighten($main-tone, 20%);
 				margin-bottom: 0;
 				font-size: 1rem;
+				text-align: center;
 			}
 
 		}
 		div.element-chooser {
-			width: 300px;
+			width: 200px;
 			bottom: 55px;
 			left: 55px;
 
@@ -126,7 +127,8 @@ body {
 					}
 
 					&.highlight {
-						background: $highlight-tone;
+						//background: linear-gradient(lighten($highlight-tone, 15%), $highlight-tone);
+						color: $highlight-tone;
 					}
 				}
 			}
@@ -139,7 +141,8 @@ body {
 			right: 55px;
 
 			ul li.highlight {
-				background: $highlight-tone-alt;
+				//background: linear-gradient(lighten($highlight-tone-alt, 15%), $highlight-tone-alt);
+				color: $highlight-tone-alt;
 			}
 		}
 	}
@@ -233,6 +236,8 @@ body {
 			p.transition, p.transition:after {
 				// right padding might be slightly off vs Final Draft
 				text-align: right;
+				left: auto;
+				right: 0;
 			}
 
 			p.shot, p.shot:after {
