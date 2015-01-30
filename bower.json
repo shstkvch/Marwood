@@ -1,0 +1,11 @@
+{
+  "name": "terry",
+  "private": true,
+  "dependencies": {
+    "foundation": "~5.2",
+    
+    "modernizr": "~2.8.2",
+    "jquery": "~2.1.1"
+  },
+  "devDependencies": {}
+}
