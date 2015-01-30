@@ -22,6 +22,7 @@ Currently working:
 * All of the basic elements from Final Draft are implemented and kind of work
 * Shoddy keyboard interface - hit tab to switch element type, hit enter to create new elements.
 * Save projects down to a JSON file that won't open in anything else, or even this program
+* "Intelligent" guesses about which element you want to use next. For example, if you have two chunks of dialogue in a row, we assume that's a conversation between characters and your next element will automatically be a character element. 
 
 Near future:
 
