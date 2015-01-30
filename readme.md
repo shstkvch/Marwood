@@ -1,0 +1,42 @@
+# Marwood
+
+Final Draft is basically the de facto screenwriting software, but it has a lot of problems. It's slow, buggy and has an interface straight out of 1996. It's also costly and given how skint most screenwriters are I don't think it's a very healthy monopoly.
+
+So what's the alternative? There's stuff like Adobe Story, Celtx, Fadein and Highland - which are pretty good - but no real viable web-based alternatives. I wanted something I could stick on my server and use everywhere (laptop/phone/tablet etc.)
+
+This is my attempt at writing a minimalist, open source, web-based app that will hopefully let me write quicker and with fewer distractions.
+
+In the long term, I'd like to build in collaborative Google Docs-esque editing and complete Final Draft file format support. But that's a long way off!
+
+It's nowhere near usable yet but it does kind of work! Ish!
+
+Cheers
+
+D
+
+## Features
+
+Currently working:
+
+* Sexy dark interface that's easy on the eye.
+* All of the basic elements from Final Draft are implemented and kind of work
+* Shoddy keyboard interface - hit tab to switch element type, hit enter to create new elements.
+* Save projects down to a JSON file that won't open in anything else, or even this program
+
+Near future:
+
+* Page breaking, automatic (CONT'D)s etc
+* PDF rendering (maybe with pdf.js?)
+* Zoom
+* File load functionality (!)
+* Some kind of login system so I can work on scripts with my writing partner without faffing around sending emails to each other at 5am
+
+Someday:
+* Live collaborative Google Docsish editing
+* Multiple formatting styles (currently it's just a knockoff of the Final Draft default)
+* Annotations/highlighting
+* Scene summaries and other bullshit like that
+
+## Screenshots
+
+![Screenshot One](/screenshots/marwood-1.png)
