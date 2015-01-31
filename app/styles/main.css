@@ -2685,7 +2685,6 @@ body {
   margin: 70px auto; }
   .wrapper div.pages .page {
     border-top: 0;
-    border-bottom: 1px dashed #545454;
     margin: auto;
     padding: 100.40625px 167.34375px;
     width: 892.5px;
@@ -2707,7 +2706,8 @@ body {
         content: attr(data-ghost-text);
         position: absolute;
         opacity: 0.5;
-        left: 0; }
+        left: 0;
+        display: none; }
       .wrapper div.pages .page p span.marwood-inline {
         cursor: pointer; }
         .wrapper div.pages .page p span.marwood-inline.autocorrect {

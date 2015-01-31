@@ -196,7 +196,7 @@ body {
 		.page {
 			//border: 1px solid rgb(84,84,84);
 			border-top: 0;
-			border-bottom: 1px dashed rgb(84,84,84);
+			//border-bottom: 1px dashed rgb(84,84,84);
 			margin: auto;
 
 			$a4-width: 595px;
@@ -236,6 +236,7 @@ body {
 					position: absolute;
 					opacity: .5;
 					left: 0;
+					display: none;
 				}
 
 				// autocorrect stuff

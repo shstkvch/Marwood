@@ -73,7 +73,7 @@ $(function() {
 
 				// are in chooser mode? if so, user just made a choice by hitting enter
 				if(application_state == "character_chooser") {
-					alert('Chose!');
+					//alert('Chose!');
 				}
 			} else if (element_type == "parenthetical") {
 				// after a parenthetical, insert a dialogue
@@ -124,6 +124,7 @@ $(function() {
 
 			if(application_state == "character_chooser") {
 				// ...
+
 			} else if (application_state == "scene_chooser") {
 				// ...
 			}
@@ -459,7 +460,7 @@ $(function() {
 	function tidyElement($element) {
 		// TODO: spelling suggestions, highlighting etc.
 		// FIXME: only corrects one at a time for some reason
-		
+
 		var type_of_element = $element.attr('class');
 
 		if(type_of_element == "action"
@@ -505,7 +506,7 @@ $(function() {
 
 		var template = {
 			meta: {
-				title: ""
+				title: script_title
 			},
 			elements: []
 		};
@@ -515,8 +516,6 @@ $(function() {
 
 		// go through every page
 		$(".page").each(function(page_index, page) {
-			template.pages[page_index] = []
-
 			$(page).find('p').each(function(index, element) {
 				template.elements[index] = {
 					element_type: $(element).attr('class'),
@@ -558,12 +557,14 @@ $(function() {
 		if($(this).text() == "Untitled Screenplay") {
 			$(this).text("");
 		}
-	}).keypress(function(e) {
+	}).keypress(function(e) { // TODO: tidy below up
 		if(e.which == 13) {
 			$(this).removeAttr('contenteditable').removeClass('editing');
+			script_title = $(this).text();
 		}
 	}).blur(function(e) {
 		$(this).removeAttr('contenteditable').removeClass('editing');
+		script_title = $(this).text();
 	});
 
 	// autocorrect
