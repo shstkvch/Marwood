@@ -45,9 +45,23 @@ body {
 				text-align: center;
 				color: #fff;
 				font-size: 1rem;
-				margin: 1.5rem 0;
+				margin: 1.2rem 0;
 				color: rgb(120,120,120);
 				font-weight: bold;
+				border: 1px solid transparent;
+				padding: 4px;
+				outline: none;
+
+				&:hover {
+					color: #fff;
+					cursor: pointer;
+					border: 1px dashed lighten($main-tone, 20%);
+				}
+
+				&.editing {
+					color: $highlight-tone-primary;
+					border: 1px solid lighten($main-tone, 20%);
+				}
 			}
 		}
 
@@ -177,11 +191,12 @@ body {
 	// the main wrapper of all the pages
 	div.pages {
 		margin: 70px auto;
-		
+
 		// an individual page
 		.page {
 			//border: 1px solid rgb(84,84,84);
 			border-top: 0;
+			border-bottom: 1px dashed rgb(84,84,84);
 			margin: auto;
 
 			$a4-width: 595px;
@@ -221,6 +236,15 @@ body {
 					position: absolute;
 					opacity: .5;
 					left: 0;
+				}
+
+				// autocorrect stuff
+				span.marwood-inline {
+					cursor: pointer;
+					&.autocorrect {
+						border-bottom: 1px dotted $highlight-tone-alt-2;
+						padding-bottom: 3px;
+					}
 				}
 			}
 

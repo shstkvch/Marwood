@@ -2589,9 +2589,19 @@ body {
       text-align: center;
       color: #fff;
       font-size: 1rem;
-      margin: 1.5rem 0;
+      margin: 1.2rem 0;
       color: #787878;
-      font-weight: bold; }
+      font-weight: bold;
+      border: 1px solid transparent;
+      padding: 4px;
+      outline: none; }
+      .wrapper header .script-meta h1:hover {
+        color: #fff;
+        cursor: pointer;
+        border: 1px dashed #505050; }
+      .wrapper header .script-meta h1.editing {
+        color: #ff8f44;
+        border: 1px solid #505050; }
   .wrapper header .toolbar {
     padding-left: 0.9375rem;
     padding-right: 0.9375rem;
@@ -2675,6 +2685,7 @@ body {
   margin: 70px auto; }
   .wrapper div.pages .page {
     border-top: 0;
+    border-bottom: 1px dashed #545454;
     margin: auto;
     padding: 100.40625px 167.34375px;
     width: 892.5px;
@@ -2697,6 +2708,11 @@ body {
         position: absolute;
         opacity: 0.5;
         left: 0; }
+      .wrapper div.pages .page p span.marwood-inline {
+        cursor: pointer; }
+        .wrapper div.pages .page p span.marwood-inline.autocorrect {
+          border-bottom: 1px dotted #4479ff;
+          padding-bottom: 3px; }
     .wrapper div.pages .page p.ghost {
       opacity: 0.5; }
     .wrapper div.pages .page p.scene-heading, .wrapper div.pages .page p.scene-heading:after {

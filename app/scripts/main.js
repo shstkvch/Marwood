@@ -8,7 +8,8 @@ $(function() {
 	var script_title = "Untitled Script";
 	var application_state = "default"; // default, character_chooser,
 																		 // scene_chooser
-	window.known_characters = new Array; // every unique character element value
+	var autocorrect_hints = true;
+	var known_characters = new Array; // every unique character element value
 
 	$("div.page").focus();
 
@@ -56,8 +57,8 @@ $(function() {
 
 				var character_name_clean = cleanElementText($dom_element.text().toLowerCase());
 
-				if(known_characters.indexOf(character_name_clean) == -1) {
-					known_characters.push(character_name_clean);
+				if(known_characters.indexOf(character_name_clean.toUpperCase()) == -1) {
+					known_characters.push(character_name_clean.toUpperCase());
 
 					console.log('added', character_name_clean, 'to known characters');
 				} else {
@@ -109,6 +110,9 @@ $(function() {
 
 			if(!isBlankElement($dom_element)) {
 				createNewElement(new_element_type, element_to_insert_after);
+
+				// tidy & process the new element
+				tidyElement($dom_element);
 			}
 
 			// todo: ghost autocomplete selection
@@ -128,7 +132,7 @@ $(function() {
 		}
 	});
 
-	$("div.page").on("keydown focus click", function(e) {
+	$("div.page").on("keyup focus click", function(e) {
 		// establish what element we're in
 		var $dom_element = getActiveDomElement();
 		var element_type = $dom_element.attr("class");
@@ -213,7 +217,7 @@ $(function() {
 
 		console.log('cleaning up', $page);
 
-		$page.find("span").each(function(index, span) {
+		$page.find("span:not(.marwood-inline)").each(function(index, span) {
 			var innerText = $(span).text();
 			console.log('cleaning span', span);
 			$(span).replaceWith(innerText);
@@ -308,6 +312,8 @@ $(function() {
 
 			if (  $possible_partner.hasClass('character')
 				 && $possible_partner.attr("data-character-index")) {
+
+				console.log('found conversational partner');
 
 				// found a conversation partner
 				partner_name = known_characters[$possible_partner.attr("data-character-index")];
@@ -450,6 +456,49 @@ $(function() {
 		return text.trim().replace(/[\u200B-\u200D\uFEFF]/g, '');
 	}
 
+	function tidyElement($element) {
+		// TODO: spelling suggestions, highlighting etc.
+		// FIXME: only corrects one at a time for some reason
+		
+		var type_of_element = $element.attr('class');
+
+		if(type_of_element == "action"
+			 || type_of_element == "general") {
+
+			console.log('tidying element', $element);
+
+			// replace any references to character names with uppercase versions.
+			var old_string = $element.html();
+			var new_string;
+
+			for(index in known_characters) {
+				var name = known_characters[index];
+				var index;
+
+				if(index = $element.html().toLowerCase().indexOf(name.toLowerCase()) > -1) {
+					if(old_string.indexOf(name) < 0) {
+						// only correct if it's not already okay
+						if(autocorrect_hints) {
+							new_string = old_string.replaceAll(name, "<span class='marwood-inline autocorrect'>" + name + "</span>");
+						} else {
+							new_string = old_string.replaceAll(name, name);
+						}
+						console.log('new string', new_string);
+
+					} else {
+						console.log('not adjusting old string, its fine', old_string, name);
+					}
+				} else {
+					console.log('boo', $element.text().toLowerCase().indexOf(name), name);
+				}
+			}
+
+			if(new_string) {
+				$element.html(new_string); // update it
+			}
+		}
+	}
+
 	function saveScript() {
 		// save the screenplay down to a json-formatted file
 		// returns a data url to shove in a link
@@ -496,9 +545,36 @@ $(function() {
 		return $dom_element;
 	}
 
+	//// INTERFACE
+
 	// save button
 	$('a.toolbar-button.save').click(function() {
 		saveScript();
+	});
+
+	$('h1.screenplay-name').click(function() {
+		$(this).attr('contenteditable', '').focus().addClass('editing');
+
+		if($(this).text() == "Untitled Screenplay") {
+			$(this).text("");
+		}
+	}).keypress(function(e) {
+		if(e.which == 13) {
+			$(this).removeAttr('contenteditable').removeClass('editing');
+		}
+	}).blur(function(e) {
+		$(this).removeAttr('contenteditable').removeClass('editing');
+	});
+
+	// autocorrect
+	$('div.page').on('click', 'span.marwood-inline', function() {
+		alert("Marwood corrected this character name into uppercase automatically. If you find this really annoying, unfortunately there's no way to turn it off right now.")
+		// let's try and not be annoying
+		autocorrect_hints = false;
+		$('span.marwood-inline').each(function(index, element) {
+			var $element = $(element);
+			$element.replaceWith($element.text()); // remove the hint
+		});
 	});
 });
 
@@ -520,4 +596,8 @@ $('body').on('focus', '[contenteditable]', function() {
 // misc
 String.prototype.toProperCase = function () {
 		return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};
+String.prototype.replaceAll = function(strReplace, strWith) {
+		var reg = new RegExp(strReplace, 'ig');
+		return this.replace(reg, strWith);
 };
