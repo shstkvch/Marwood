@@ -172,14 +172,13 @@ $(function() {
 
 		var $dom_element = getActiveDomElement();
 
-		active_element_type = element_index % element_types.length;
-		if (active_element_type == -1) {
-			// there's probably a cleaner way of doing this but it's simple
-
-			active_element_type = element_types.length - 1;
+		element_index = element_index % element_types.length;
+		if(element_index == -1) {
+			element_index = element_types.length -1;
 		}
+		active_element_type = element_index;
 
-		console.log(active_element_type);
+		console.log('aet', active_element_type);
 
 		$dom_element.attr("class", element_types[element_index]);
 
