@@ -1,7 +1,7 @@
 $(function() {
-	var element_types = ["general", "action", "character", "dialogue",
-											 "parenthetical", "scene-heading", "transition",
-											 "shot"];
+	var element_types = ["scene-heading",  "action", "character", "dialogue",
+											 "parenthetical", "transition",
+											 "shot", "general"];
 	var active_element_type = 0; // action
 	var last_character_name = "";
 	var page_max_inner_height = $("meta.maximum-inner-height").height();
@@ -289,7 +289,7 @@ $(function() {
 			meta: {
 				title: ""
 			},
-			pages: []
+			elements: []
 		};
 
 		// set the title
@@ -300,7 +300,7 @@ $(function() {
 			template.pages[page_index] = []
 
 			$(page).find('p').each(function(index, element) {
-				template.pages[page_index][index] = {
+				template.elements[index] = {
 					element_type: $(element).attr('class'),
 					text: $(element).text()
 				}
@@ -310,7 +310,7 @@ $(function() {
 		var blob = new Blob([JSON.stringify(template)], {
 			type: "application/json;charset=utf-8"
 		});
-		saveAs(blob, script_title + '.terry');
+		saveAs(blob, script_title + '.marwood');
 	}
 
 	function getActiveDomElement() {
