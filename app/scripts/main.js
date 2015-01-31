@@ -259,7 +259,7 @@ $(function() {
 			// if we have a suggested character name, ghost it
 			console.log("looking for partner");
 
-			var $possible_partner = $dom_element.prev().prev().prev().prev();
+			var $possible_partner = $dom_element.prev().prev().prev().prev()	;
 
 			if (  $possible_partner.hasClass('character')
 				 && $possible_partner.attr("data-character-index")) {
