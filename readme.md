@@ -25,7 +25,7 @@ Currently working:
 * "Intelligent" guesses about which element you want to use next. For example, if you have two chunks of dialogue in a row, we assume that's a conversation between characters and your next element will automatically be a character element.
 * Autocorrect - character names are automatically corrected to upper case
   in action and general elements
-* Several exciting, crippling bugs
+* Several exciting, usability-crippling bugs
 
 Near future:
 
