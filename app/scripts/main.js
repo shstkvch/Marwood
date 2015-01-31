@@ -6,6 +6,9 @@ $(function() {
 	var last_character_name = "";
 	var page_max_inner_height = $("meta.maximum-inner-height").height();
 	var script_title = "Untitled Script";
+	var application_state = "default"; // default, character_chooser,
+																		 // scene_chooser
+	window.known_characters = new Array; // every unique character element value
 
 	$("div.page").focus();
 
@@ -20,12 +23,11 @@ $(function() {
 			e.preventDefault();
 
 			// if the element we're on is blank, do the switcheroo!
-			if($dom_element.text().trim().replace("&#8203;", "")) {
+			if(isBlankElement($dom_element)) {
 				switchElementType(e.shiftKey); // if shift is down then we go backwards
-			} else {
-				console.log("not switching element type",  "\"", $dom_element.text().trim().replace("&#8203;", ""), "\"");
-				console.log($dom_element);
 			}
+
+			console.log(isBlankElement($dom_element), $dom_element);
 		}
 
 		// override default enter key behaviour
@@ -41,12 +43,31 @@ $(function() {
 				// after a character, insert a dialogue UNLESS we already have one
 				// if we have one already, insert a parenthetical
 
+				if(isBlankElement($dom_element)) {
+					return;
+				}
+
 				if($dom_element.next().attr("class") == "dialogue") {
 					new_element_type = "parenthetical";
-
 				} else {
 					new_element_type = "dialogue";
 				}
+
+				var character_name_clean = cleanElementText($dom_element.text().toLowerCase());
+
+				if(known_characters.indexOf(character_name_clean) == -1) {
+					known_characters.push(character_name_clean);
+
+					console.log('added', character_name_clean, 'to known characters');
+				} else {
+					console.log(character_name_clean, 'already in known characters');
+				}
+
+				// update the data-character-id for this element
+				var character_index = known_characters.indexOf(character_name_clean);
+				$dom_element.attr('data-character-index', character_index);
+
+				updateKnownCharactersHud();
 
 			} else if (element_type == "parenthetical") {
 				// after a parenthetical, insert a dialogue
@@ -68,23 +89,41 @@ $(function() {
 					new_element_type = "action";
 				}
 
+				// update the data-character-id for this element
+				var character_name = $dom_element.prev('.character').text();
+				var character_name_clean = cleanElementText(character_name);
+				var character_index = known_characters.indexOf(character_name_clean);
+
+				$dom_element.attr('data-character-index', character_index);
+
 			} else if (element_type == "action") {
 				// after an action, insert a character
 
 				new_element_type = "character";
 			}
 
-			console.log($dom_element.text().trim().replace("&#8203;", "") == "");
-
-			if($dom_element.text().trim().replace("&#8203;", "") != "") {
+			if(!isBlankElement($dom_element)) {
 				createNewElement(new_element_type, element_to_insert_after);
 			}
 
 			// todo: ghost autocomplete selection
 		}
+
+		// override default ALT key behaviour (for switching between characters)
+		if(e.which == 18) {
+			e.preventDefault();
+
+			if(application_state == "character_chooser") {
+				// ...
+			} else if (application_state == "scene_chooser") {
+				// ...
+			}
+
+			// not doing anything
+		}
 	});
 
-	$("div.page").on('keydown focus click', function(e) {
+	$("div.page").on("keydown focus click", function(e) {
 		// establish what element we're in
 		var $dom_element = getActiveDomElement();
 		var element_type = $dom_element.attr("class");
@@ -100,11 +139,38 @@ $(function() {
 		// update the active element type
 		active_element_type = element_types.indexOf(element_type);
 		flashElementHud();
+		updateKnownCharactersHud();
+
+		$(".chooser.from-right").removeClass("visible");
+
+		// special cases -- show HUD on right for certain elements
+		if(element_type == "character" || element_type == "dialogue") {
+			// reveal the character name chooser
+
+			if(!known_characters.length) {
+				return;
+			}
+
+			$(".chooser.from-right.character-chooser").addClass("visible");
+
+			// update the application state
+			application_state = "character_chooser";
+
+			// are we on a blank character element?
+
+			if(element_type == "character" && isBlankElement($dom_element)) {
+				console.log('ghosting...');
+			}
+		} else {
+			// back to the default application state
+
+			application_state = "default";
+		}
 
 		console.log($dom_element.html());
 	});
 
-	$('div.page').change(function() {
+	$("div.page").change(function() {
 		// every time the page changes, check we're not over
 		// the inner height limit. if we are then we have to
 		// move as much as possible to the next page.
@@ -185,7 +251,20 @@ $(function() {
 		// special case ghosting etc
 		var new_ghost_text = "";
 		if(element_types[element_index] == "character") {
-			new_ghost_text = "Captain Peters";
+			// if we have a suggested character name, ghost it
+			console.log("looking for partner");
+
+			var $possible_partner = $dom_element.prev().prev();
+
+			if (  $possible_partner.hasClass('character')
+				 && $possible_partner.attr("data-character-index")) {
+
+				// found a conversation partner
+				partner_name = known_characters[$possible_partner.attr("data-character-index")];
+
+				new_ghost_text = partner_name;
+			}
+
 		} else if (element_types[element_index] == "scene-heading") {
 			new_ghost_text = "INT. Bridge - Day";
 		} else if (element_types[element_index] == "transition") {
@@ -204,6 +283,34 @@ $(function() {
 		$("div.hud .element-chooser li").removeClass("highlight");
 		$("div.hud .element-chooser li:eq(" + active_element_type + ")").addClass("highlight");
 		//$("div.hud .element-chooser").fadeOut(2000);
+	}
+
+	function updateKnownCharactersHud() {
+		// add any new names to the HUD and update the highlighted name
+
+		var $dom_element = getActiveDomElement();
+
+		$('.character-chooser ul').empty();
+
+		for(index in known_characters) {
+			var name = known_characters[index];
+
+			$('.character-chooser ul').append(
+				'<li class="character-' + index + '">' + name.toProperCase() + '</li>'
+			);
+		}
+
+		// highlight the character that is currently active
+		var character_index = $dom_element.attr('data-character-index');
+		$('.character-chooser ul li').removeClass('highlight');
+
+		if(isNaN(character_index)) {
+			// panic
+			console.error('No character index for this element!!', $dom_element);
+		} else {
+			$('.character-chooser ul li:eq(' + character_index + ')')
+				.addClass('highlight');
+		}
 	}
 
 	function checkElementsExist() {
@@ -238,6 +345,9 @@ $(function() {
 		// special case stuff
 		if(new_element_type == "parenthetical") {
 			text_override = "()";
+		} else if (new_element_type == "dialogue") {
+			// inherit the parent's character index if available
+			$new_element.attr('data-character-index', $dom_element.attr('data-character-index'));
 		}
 
 		// todo - switch back to last used character from dialogue
@@ -278,6 +388,16 @@ $(function() {
 		if(inner_height > page_max_inner_height) {
 
 		}
+	}
+
+	function isBlankElement($element) {
+		// quick function to tell if an element is blank
+
+		return $element.text().trim().replace(/[\u200B-\u200D\uFEFF]/g, '') == "";
+	}
+
+	function cleanElementText(text) {
+		return text.trim().replace(/[\u200B-\u200D\uFEFF]/g, '');
 	}
 
 	function saveScript() {
@@ -346,3 +466,8 @@ $('body').on('focus', '[contenteditable]', function() {
 		}
 		return $this;
 });
+
+// misc
+String.prototype.toProperCase = function () {
+		return this.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+};

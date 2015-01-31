@@ -2615,7 +2615,20 @@ body {
   z-index: 999999;
   border-radius: 3px;
   overflow: hidden;
-  position: fixed; }
+  position: fixed;
+  transition: all 0.4s; }
+  .wrapper div.hud div.chooser.from-right {
+    right: -200px;
+    opacity: 0; }
+    .wrapper div.hud div.chooser.from-right.visible {
+      right: 50px;
+      opacity: 1; }
+  .wrapper div.hud div.chooser.from-left {
+    left: -200px;
+    opacity: 0; }
+    .wrapper div.hud div.chooser.from-left.visible {
+      left: 50px;
+      opacity: 1; }
   .wrapper div.hud div.chooser ul {
     list-style-type: none;
     margin: 10px 0; }
@@ -2627,7 +2640,6 @@ body {
         height: 45px;
         font-weight: bold;
         height: 45px;
-        padding-left: 20px;
         transition: padding-left 0.2s; }
       .wrapper div.hud div.chooser ul li a {
         color: #fff; }
@@ -2650,7 +2662,7 @@ body {
       .wrapper div.hud div.element-chooser ul li a {
         color: #fff; }
       .wrapper div.hud div.element-chooser ul li.highlight {
-        color: #ff8f44; }
+        color: #ff8c44; }
 .wrapper div.hud div.character-chooser {
   background: #101010;
   width: 200px;
@@ -2681,6 +2693,7 @@ body {
       text-align: left;
       position: relative; }
       .wrapper div.pages .page p:after {
+        content: attr(data-ghost-text);
         position: absolute;
         opacity: 0.5;
         left: 0; }

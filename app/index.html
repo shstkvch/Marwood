@@ -39,10 +39,10 @@
             </nav>
         </header>
         <div class="hud">
-          <div class="element-chooser chooser">
+          <div class="element-chooser chooser from-left visible">
             <p class="help">Switch elements<br/>with the TAB key</p>
             <ul>
-              <li class="scene-heading">Scene Heading</li>
+              <li class="scene-heading highlight">Scene Heading</li>
               <li class="action">Action</li>
               <li class="character">Character</li>
               <li class="dialogue">Dialogue</li>
@@ -52,7 +52,7 @@
               <li class="general">General</li>
             </ul>
           </div>
-          <div class="character-chooser chooser" style="display: block;">
+          <div class="character-chooser chooser from-right" style="display: block;">
             <p class="help">Switch characters<br/>with the ALT key</p>
             <ul>
               <li class="highlight">Captain Peters</li>
@@ -100,6 +100,7 @@
     <!-- endbuild -->
 
     <!-- build:js scripts/main.js -->
+    <script src="bower_components/underscore/underscore-min.js"></script>
     <script src="scripts/filesaver.js"></script>
     <script src="scripts/base64.js"></script>
     <script src="scripts/main.js"></script>

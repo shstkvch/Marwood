@@ -10,8 +10,13 @@ $fa-font-path: "../bower_components/fontawesome/fonts" !default;
 // constants
 $main-tone: darken(rgb(44,44,44), 6%);
 $primary-text-colour: darken(#fff, 10%);
-$highlight-tone: lighten(#DD5C00, 20%);
-$highlight-tone-alt: lighten(#003EDD, 20%);
+$highlight-tone-primary: lighten(#DD5C00, 20%);
+$highlight-tone-alt-1: adjust-hue($highlight-tone-primary, 0%);
+$highlight-tone-alt-2: adjust-hue($highlight-tone-primary, 200%);
+$highlight-tone-alt-3: adjust-hue($highlight-tone-primary, 50%);
+$highlight-tone-alt-4: adjust-hue($highlight-tone-primary, 100%);
+
+
 
 body {
 	background: $main-tone;
@@ -78,6 +83,28 @@ body {
 			// display: none;
 			position: fixed;
 
+			transition: all .4s;
+
+			&.from-right {
+				right: -200px;
+				opacity: 0;
+
+				&.visible {
+					right: 50px;
+					opacity: 1;
+				}
+			}
+
+			&.from-left {
+				left: -200px;
+				opacity: 0;
+
+				&.visible {
+					left: 50px;
+					opacity: 1;
+				}
+			}
+
 			ul {
 				list-style-type: none;
 				margin: 10px 0;
@@ -91,7 +118,7 @@ body {
 						height: 45px;
 						font-weight: bold;
 						height: 45px;
-						padding-left: 20px;
+						//padding-left: 20px;
 						transition: padding-left .2s;
 					}
 
@@ -128,7 +155,7 @@ body {
 
 					&.highlight {
 						//background: linear-gradient(lighten($highlight-tone, 15%), $highlight-tone);
-						color: $highlight-tone;
+						color: $highlight-tone-alt-1;
 					}
 				}
 			}
@@ -142,7 +169,7 @@ body {
 
 			ul li.highlight {
 				//background: linear-gradient(lighten($highlight-tone-alt, 15%), $highlight-tone-alt);
-				color: $highlight-tone-alt;
+				color: $highlight-tone-alt-2;
 			}
 		}
 	}
@@ -190,7 +217,7 @@ body {
 				position: relative;
 
 				&:after {
-					//content: attr(data-ghost-text);
+					content: attr(data-ghost-text);
 					position: absolute;
 					opacity: .5;
 					left: 0;
