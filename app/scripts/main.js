@@ -43,7 +43,8 @@ $(function() {
 				// after a character, insert a dialogue UNLESS we already have one
 				// if we have one already, insert a parenthetical
 
-				if(isBlankElement($dom_element)) {
+				if(	 isBlankElement($dom_element)
+					&& application_state != "character_chooser") {
 					return;
 				}
 
@@ -69,6 +70,10 @@ $(function() {
 
 				updateKnownCharactersHud();
 
+				// are in chooser mode? if so, user just made a choice by hitting enter
+				if(application_state == "character_chooser") {
+					alert('Chose!');
+				}
 			} else if (element_type == "parenthetical") {
 				// after a parenthetical, insert a dialogue
 
@@ -254,7 +259,7 @@ $(function() {
 			// if we have a suggested character name, ghost it
 			console.log("looking for partner");
 
-			var $possible_partner = $dom_element.prev().prev();
+			var $possible_partner = $dom_element.prev().prev().prev().prev();
 
 			if (  $possible_partner.hasClass('character')
 				 && $possible_partner.attr("data-character-index")) {
@@ -347,7 +352,7 @@ $(function() {
 			text_override = "()";
 		} else if (new_element_type == "dialogue") {
 			// inherit the parent's character index if available
-			$new_element.attr('data-character-index', $dom_element.attr('data-character-index'));
+			$new_element.attr('data-character-index', $new_element.prev().attr('data-character-index'));
 		}
 
 		// todo - switch back to last used character from dialogue
