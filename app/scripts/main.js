@@ -10,6 +10,7 @@ $(function() {
 																		 // scene_chooser
 	var autocorrect_hints = true;
 	var known_characters = new Array; // every unique character element value
+	var active_character = 0;
 
 	$("div.page").focus();
 
@@ -124,6 +125,7 @@ $(function() {
 
 			if(application_state == "character_chooser") {
 				// ...
+				switchCharacter();
 
 			} else if (application_state == "scene_chooser") {
 				// ...
@@ -148,7 +150,7 @@ $(function() {
 
 		// update the active element type
 		active_element_type = element_types.indexOf(element_type);
-		flashElementHud();
+		updateElementHud();
 		updateKnownCharactersHud();
 
 		$(".chooser.from-right").removeClass("visible");
@@ -269,11 +271,7 @@ $(function() {
 	}
 
 	function switchElementType(reverse) {
-		// TODO: consolidate these $dom_element lines into a function?
-
 		var $dom_element = getActiveDomElement();
-		// FIXME: element chooser fades out too quickly if you hold tab down and
-		//				cycle rapidly
 
 		if(reverse) {
 			var step = -1;
@@ -282,7 +280,6 @@ $(function() {
 		}
 
 		setActiveElementIndex(active_element_type + step);
-		flashElementHud();
 	}
 
 	function setActiveElementIndex(element_index) {
@@ -333,13 +330,58 @@ $(function() {
 		return element_types[element_index];
 	}
 
-	function flashElementHud() {
-		// flash the elements heads up display
+	function switchCharacter(reverse) {
+		var $dom_element = getActiveDomElement();
 
-		//$("div.hud .element-chooser").stop(true, true).show();
+		if(reverse) {
+			var step = -1;
+		} else {
+			var step = 1;
+		}
+
+		setActiveCharacterIndex(active_character + step);
+
+		// now update the character name of the current dom element
+		var new_name = known_characters[active_character];
+
+		if($dom_element.hasClass('character')) {
+			// this is it!
+			$dom_element.text(new_name)
+				.attr('data-character-index', active_character);
+				// TODO - update dialogue char index too
+
+		} else if($dom_element.hasClass('dialogue')) {
+			// find the character element for this dialogue
+
+			if($dom_element.prev().hasClass('dialogue')) {
+				// found it
+
+				$dom_element.prev().text(new_name)
+					.attr('data-character-index', active_character);
+
+				// update the active character for this too
+				$dom_element.attr('data-character-index', active_character);
+			} else {
+				// TODO: traverse until we find parent character element
+			}
+		}
+	}
+
+	function setActiveCharacterIndex(character_index) {
+		var $dom_element = getActiveDomElement();
+
+		character_index = character_index % known_characters.length;
+		if(character_index == -1) {
+			character_index = known_characters.length -1;
+		}
+		active_character = character_index;
+
+		console.log('set active character to', character_index);
+	}
+
+	function updateElementHud() {
 		$("div.hud .element-chooser li").removeClass("highlight");
 		$("div.hud .element-chooser li:eq(" + active_element_type + ")").addClass("highlight");
-		//$("div.hud .element-chooser").fadeOut(2000);
 	}
 
 	function updateKnownCharactersHud() {
@@ -357,17 +399,8 @@ $(function() {
 			);
 		}
 
-		// highlight the character that is currently active
-		var character_index = $dom_element.attr('data-character-index');
-		$('.character-chooser ul li').removeClass('highlight');
-
-		if(isNaN(character_index)) {
-			// panic
-			console.warn('No character index for this element!!', $dom_element);
-		} else {
-			$('.character-chooser ul li:eq(' + character_index + ')')
-				.addClass('highlight');
-		}
+		$('.character-chooser ul li:eq(' + active_character + ')')
+			.addClass('highlight');
 	}
 
 	function checkElementsExist() {
@@ -424,7 +457,7 @@ $(function() {
 
 		// now update the active element index and flash the HUD
 		active_element_type = element_types.indexOf(new_element_type);
-		flashElementHud();
+		updateElementHud();
 
 		return $new_element;
 	}

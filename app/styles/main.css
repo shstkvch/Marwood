@@ -2717,26 +2717,33 @@ body {
       opacity: 0.5; }
     .wrapper div.pages .page p.scene-heading, .wrapper div.pages .page p.scene-heading:after {
       font-weight: bold !important;
-      text-transform: uppercase; }
+      text-transform: uppercase;
+      /*!marwood-next: "action"*/ }
     .wrapper div.pages .page p.action, .wrapper div.pages .page p.action:after {
       padding-left: 0px !important;
-      padding-right: 0px !important; }
+      padding-right: 0px !important;
+      /*!marwood-next: "dialogue"*/ }
     .wrapper div.pages .page p.character, .wrapper div.pages .page p.character:after {
       font-weight: bold !important;
       padding-left: 223.125px !important;
       padding-right: 0px !important;
       margin-bottom: 0 !important;
-      text-transform: uppercase; }
+      text-transform: uppercase;
+      /*!marwood-next: "action"*/ }
     .wrapper div.pages .page p.dialogue, .wrapper div.pages .page p.dialogue:after {
       padding-left: 111.5625px !important;
-      padding-right: 111.5625px !important; }
+      padding-right: 111.5625px !important;
+      /*!marwood-next: "action"*/ }
     .wrapper div.pages .page p.parenthetical, .wrapper div.pages .page p.parenthetical:after {
       padding-left: 167.34375px !important;
       padding-right: 0px !important;
-      margin-bottom: 0; }
+      margin-bottom: 0;
+      /*!marwood-next: "dialogue"*/ }
     .wrapper div.pages .page p.transition, .wrapper div.pages .page p.transition:after {
       text-align: right;
       left: auto;
-      right: 0; }
+      right: 0;
+      /*!marwood-next: "action"*/ }
     .wrapper div.pages .page p.shot, .wrapper div.pages .page p.shot:after {
-      text-transform: uppercase; }
+      text-transform: uppercase;
+      /*!marwood-next: "action"*/ }

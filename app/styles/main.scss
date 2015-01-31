@@ -259,11 +259,13 @@ body {
 				//border-bottom: (1px * $page-scale) solid $primary-text-colour !important;
 				//padding-bottom: $one-inch / 6 !important;
 				text-transform: uppercase;
+				/*!marwood-next: "action"*/
 			}
 
 			p.action, p.action:after {
 				padding-left: 0 * $one-inch !important;
 				padding-right: 0 * $one-inch !important;
+				/*!marwood-next: "dialogue"*/
 			}
 
 			p.character, p.character:after {
@@ -272,17 +274,20 @@ body {
 				padding-right: 0 * $one-inch !important;
 				margin-bottom: 0 !important;
 				text-transform: uppercase;
+				/*!marwood-next: "action"*/
 			}
 
 			p.dialogue, p.dialogue:after {
 				padding-left: 1 * $one-inch !important;
 				padding-right: 1 * $one-inch !important;
+				/*!marwood-next: "action"*/
 			}
 
 			p.parenthetical, p.parenthetical:after {
 				padding-left: 1.5 * $one-inch !important;
 				padding-right: 0 * $one-inch !important;
 				margin-bottom: 0;
+				/*!marwood-next: "dialogue"*/
 			}
 
 			p.transition, p.transition:after {
@@ -290,10 +295,12 @@ body {
 				text-align: right;
 				left: auto;
 				right: 0;
+				/*!marwood-next: "action"*/
 			}
 
 			p.shot, p.shot:after {
 				text-transform: uppercase;
+				/*!marwood-next: "action"*/
 			}
 		}
 	}
