@@ -137,7 +137,7 @@ $(function() {
 
 		// override default backspace key behaviour
 		if (e.which == 8) {
-			cleanupOrphanSpans();
+			cleanupPage($(this));
 			checkElementsExist();
 		}
 
@@ -180,23 +180,68 @@ $(function() {
 		// the inner height limit. if we are then we have to
 		// move as much as possible to the next page.
 
-		if(checkPageInnerHeight(this)) {
+		if(checkPageInnerHeight()) {
 			// ...
 		}
+
+		cleanupPage($(this));
+	});
+
+	// copy & paste
+	$('div.page').on('cut copy paste', function(e) {
+		var clipboard_data = e.originalEvent.clipboardData;
+
+		if(e.type == "copy" || e.type == "cut") {
+				var plainText = clipboard_data.getData('text/plain');
+				console.log('pt', plainText);
+		} else {
+			console.log(clipboard_data.getData('html'));
+			//e.preventDefault();
+
+			cleanupPage($(this), true);
+		}
+
 	});
 
 
 	// general functions
-	function cleanupOrphanSpans() {
+	function cleanupPage($page, after_paste) {
 		// sometimes when you delete an element we end up with dodgy
 		// spans appearing out of nowhere, ruining the formatting.
 		//
 		// this tidies them up a bit.
-		$("div.page span").each(function(index, span) {
+
+		console.log('cleaning up', $page);
+
+		$page.find("span").each(function(index, span) {
 			var innerText = $(span).text();
-			console.log(span);
+			console.log('cleaning span', span);
 			$(span).replaceWith(innerText);
 		});
+
+		// remove any inline styles that have mysteriously appeared
+		$page.find('p').removeAttr('style');
+
+		// everything that's not a P, turn it into a P.general
+		var $dodgy_children = $('.page').children().not('p');
+		$dodgy_children.each(function(index, child) {
+			var inner_text = $(child).text();
+
+			$(child).replaceWith('<p class="general">' + inner_text + "</p>");
+		});
+
+		if(after_paste) {
+			// sometimes if you try and paste in shitloads
+			// it'll all go in a scene-heading div (since it's the default)
+			//
+			// replace with general
+			$page.find('p.scene-heading + p.scene-heading')
+				.removeClass('scene-heading')
+				.addClass('general');
+		}
+
+		// remove any blank Ps
+		$page.find('p:empty').remove()
 	}
 
 	function focusOnElement($element) {
@@ -311,7 +356,7 @@ $(function() {
 
 		if(isNaN(character_index)) {
 			// panic
-			console.error('No character index for this element!!', $dom_element);
+			console.warn('No character index for this element!!', $dom_element);
 		} else {
 			$('.character-chooser ul li:eq(' + character_index + ')')
 				.addClass('highlight');
