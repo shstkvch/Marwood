@@ -5,7 +5,8 @@ $(function() {
 	var active_element_type = 0; // action
 	var last_character_name = "";
 	var page_max_inner_height = $("meta.maximum-inner-height").height();
-	var script_title = "Untitled Script";
+	var default_script_title = "Untitled Script";
+	var script_title = default_script_title;
 	var application_state = "default"; // default, character_chooser,
 																		 // scene_chooser
 	var autocorrect_hints = true;
@@ -15,7 +16,7 @@ $(function() {
 	$("div.page").focus();
 
 	// every keyup in the editor
-	$("div.page").keydown(function(e) {
+	$("div.page").keypress(function(e) {
 		// establish what element we're in
 		var $dom_element = getActiveDomElement();
 		var element_type = $dom_element.attr("class");
@@ -248,7 +249,7 @@ $(function() {
 		}
 
 		// remove any blank Ps
-		$page.find('p:empty').remove()
+		$page.find("p:empty").remove();
 	}
 
 	function focusOnElement($element) {
@@ -587,15 +588,20 @@ $(function() {
 	$('h1.screenplay-name').click(function() {
 		$(this).attr('contenteditable', '').focus().addClass('editing');
 
-		if($(this).text() == "Untitled Screenplay") {
+		if($(this).text() == default_script_title) {
 			$(this).text("");
 		}
+
 	}).keypress(function(e) { // TODO: tidy below up
 		if(e.which == 13) {
 			$(this).removeAttr('contenteditable').removeClass('editing');
 			script_title = $(this).text();
 		}
 	}).blur(function(e) {
+		if ($(this).text().trim() == "") {
+			$(this).text(default_script_title);
+		}
+
 		$(this).removeAttr('contenteditable').removeClass('editing');
 		script_title = $(this).text();
 	});

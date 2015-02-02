@@ -1,0 +1,13 @@
+// app constants
+
+$main-tone: darken(rgb(44,44,44), 6%);
+$primary-text-colour: darken(#fff, 10%);
+$highlight-tone-primary: lighten(#DD5C00, 20%);
+$highlight-tone-alt-1: adjust-hue($highlight-tone-primary, 0%);
+$highlight-tone-alt-2: adjust-hue($highlight-tone-primary, 200%);
+$highlight-tone-alt-3: adjust-hue($highlight-tone-primary, 50%);
+$highlight-tone-alt-4: adjust-hue($highlight-tone-primary, 100%);
+
+// controls
+$controls-1: lighten($main-tone, 10%);
+$controls-2: lighten($controls-1, 30%);

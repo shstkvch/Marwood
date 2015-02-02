@@ -1,0 +1,115 @@
+div.pages {
+	margin: 70px auto;
+
+	// an individual page
+	.page {
+		//border: 1px solid rgb(84,84,84);
+		border-top: 0;
+		//border-bottom: 1px dashed rgb(84,84,84);
+		margin: auto;
+
+		$a4-width: 595px;
+		$a4-height: 842px;
+
+		$font-size: 12px;
+
+		$page-scale: 1.5;
+		$one-inch: ($a4-width / 8) * $page-scale;
+
+		padding: $one-inch * .9 $one-inch * 1.5;
+
+		width: $a4-width * $page-scale;
+		height: $a4-height * $page-scale;
+
+		meta.maximum-inner-height {
+			height: ($a4-height * $page-scale) - 2 * ($one-inch * .9);
+		}
+
+		// elements
+		&, p {
+			font-size: $font-size * $page-scale;
+			font-family: Courier, monospace;
+			line-height: 200%;
+			outline: none;
+			color: $primary-text-colour;
+		}
+
+		p {
+			margin: 0;
+			margin-bottom: $one-inch / 6;
+			text-align: left;
+			position: relative;
+
+			&:after {
+				content: attr(data-ghost-text);
+				position: absolute;
+				opacity: .5;
+				left: 0;
+				display: none;
+			}
+
+			// autocorrect stuff
+			span.marwood-inline {
+				cursor: pointer;
+				&.autocorrect {
+					border-bottom: 1px dotted $highlight-tone-alt-2;
+					padding-bottom: 3px;
+				}
+			}
+		}
+
+		p.ghost {
+			// ghost elements are used for autocomplete
+			opacity: .5;
+		}
+
+		p.scene-heading, p.scene-heading:after {
+			font-weight: bold !important;
+			//border-bottom: (1px * $page-scale) solid $primary-text-colour !important;
+			//padding-bottom: $one-inch / 6 !important;
+			text-transform: uppercase;
+			/*!marwood-next: "action"*/
+		}
+
+		p.action, p.action:after {
+			padding-left: 0 * $one-inch !important;
+			padding-right: 0 * $one-inch !important;
+			/*!marwood-next: "dialogue"*/
+		}
+
+		p.character, p.character:after {
+			font-weight: bold !important;
+			padding-left: 2 * $one-inch !important;
+			padding-right: 0 * $one-inch !important;
+			margin-bottom: 0 !important;
+			text-transform: uppercase;
+			/*!marwood-next: "action"*/
+		}
+
+		p.dialogue, p.dialogue:after {
+			padding-left: 1 * $one-inch !important;
+			padding-right: 1 * $one-inch !important;
+			/*!marwood-next: "action"*/
+		}
+
+		p.parenthetical, p.parenthetical:after {
+			padding-left: 1.5 * $one-inch !important;
+			padding-right: 0 * $one-inch !important;
+			margin-bottom: 0;
+			/*!marwood-next: "dialogue"*/
+		}
+
+		p.transition, p.transition:after {
+			// right padding might be slightly off vs Final Draft
+			text-align: right;
+			left: auto;
+			right: 0;
+			/*!marwood-next: "action"*/
+		}
+
+		p.shot, p.shot:after {
+			text-transform: uppercase;
+			/*!marwood-next: "action"*/
+		}
+	}
+}

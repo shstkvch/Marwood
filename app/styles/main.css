@@ -2566,7 +2566,7 @@ body {
   right: 0;
   background: #1d1d1d;
   height: 70px;
-  border-bottom: 1px solid #545454;
+  border-bottom: 1px solid #363636;
   z-index: 999999;
   max-width: 100% !important;
   width: 100%;
@@ -2590,7 +2590,7 @@ body {
       color: #fff;
       font-size: 1rem;
       margin: 1.2rem 0;
-      color: #787878;
+      color: #838383;
       font-weight: bold;
       border: 1px solid transparent;
       padding: 4px;
@@ -2615,9 +2615,9 @@ body {
       text-align: center;
       padding-top: 20px;
       float: right;
-      border-left: 1px solid #545454;
-      border-right: 1px solid #545454;
-      color: #545454; }
+      border-left: 1px solid #363636;
+      border-right: 1px solid #363636;
+      color: #363636; }
       .wrapper header .toolbar a.toolbar-button:hover {
         color: #fff; }
 .wrapper div.hud div.chooser {
@@ -2654,9 +2654,9 @@ body {
       .wrapper div.hud div.chooser ul li a {
         color: #fff; }
   .wrapper div.hud div.chooser p.help {
-    color: #969696;
+    color: #838383;
     padding: 10px;
-    border-bottom: 1px solid #505050;
+    border-bottom: 1px solid #363636;
     margin-bottom: 0;
     font-size: 1rem;
     text-align: center; }
@@ -2681,69 +2681,78 @@ body {
   right: 55px; }
   .wrapper div.hud div.character-chooser ul li.highlight {
     color: #4479ff; }
-.wrapper div.pages {
+
+input[type="range"] {
+  -webkit-appearance: none; }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: 1px solid #363636; }
+  input[type="range"]:focus {
+    outline: none; }
+
+div.pages {
   margin: 70px auto; }
-  .wrapper div.pages .page {
+  div.pages .page {
     border-top: 0;
     margin: auto;
     padding: 100.40625px 167.34375px;
     width: 892.5px;
     height: 1263px; }
-    .wrapper div.pages .page meta.maximum-inner-height {
+    div.pages .page meta.maximum-inner-height {
       height: 1062.1875px; }
-    .wrapper div.pages .page, .wrapper div.pages .page p {
+    div.pages .page, div.pages .page p {
       font-size: 18px;
       font-family: Courier, monospace;
       line-height: 200%;
       outline: none;
       color: #e6e6e6; }
-    .wrapper div.pages .page p {
+    div.pages .page p {
       margin: 0;
       margin-bottom: 18.59375px;
       text-align: left;
       position: relative; }
-      .wrapper div.pages .page p:after {
+      div.pages .page p:after {
         content: attr(data-ghost-text);
         position: absolute;
         opacity: 0.5;
         left: 0;
         display: none; }
-      .wrapper div.pages .page p span.marwood-inline {
+      div.pages .page p span.marwood-inline {
         cursor: pointer; }
-        .wrapper div.pages .page p span.marwood-inline.autocorrect {
+        div.pages .page p span.marwood-inline.autocorrect {
           border-bottom: 1px dotted #4479ff;
           padding-bottom: 3px; }
-    .wrapper div.pages .page p.ghost {
+    div.pages .page p.ghost {
       opacity: 0.5; }
-    .wrapper div.pages .page p.scene-heading, .wrapper div.pages .page p.scene-heading:after {
+    div.pages .page p.scene-heading, div.pages .page p.scene-heading:after {
       font-weight: bold !important;
       text-transform: uppercase;
       /*!marwood-next: "action"*/ }
-    .wrapper div.pages .page p.action, .wrapper div.pages .page p.action:after {
+    div.pages .page p.action, div.pages .page p.action:after {
       padding-left: 0px !important;
       padding-right: 0px !important;
       /*!marwood-next: "dialogue"*/ }
-    .wrapper div.pages .page p.character, .wrapper div.pages .page p.character:after {
+    div.pages .page p.character, div.pages .page p.character:after {
       font-weight: bold !important;
       padding-left: 223.125px !important;
       padding-right: 0px !important;
       margin-bottom: 0 !important;
       text-transform: uppercase;
       /*!marwood-next: "action"*/ }
-    .wrapper div.pages .page p.dialogue, .wrapper div.pages .page p.dialogue:after {
+    div.pages .page p.dialogue, div.pages .page p.dialogue:after {
       padding-left: 111.5625px !important;
       padding-right: 111.5625px !important;
       /*!marwood-next: "action"*/ }
-    .wrapper div.pages .page p.parenthetical, .wrapper div.pages .page p.parenthetical:after {
+    div.pages .page p.parenthetical, div.pages .page p.parenthetical:after {
       padding-left: 167.34375px !important;
       padding-right: 0px !important;
       margin-bottom: 0;
       /*!marwood-next: "dialogue"*/ }
-    .wrapper div.pages .page p.transition, .wrapper div.pages .page p.transition:after {
+    div.pages .page p.transition, div.pages .page p.transition:after {
       text-align: right;
       left: auto;
       right: 0;
       /*!marwood-next: "action"*/ }
-    .wrapper div.pages .page p.shot, .wrapper div.pages .page p.shot:after {
+    div.pages .page p.shot, div.pages .page p.shot:after {
       text-transform: uppercase;
       /*!marwood-next: "action"*/ }

@@ -1,0 +1,28 @@
+{
+	"meta": {
+		"name": "BBC Screenplay",
+	},
+	"elements": [
+		{
+			"name": "General",
+			"align": "left",
+			"spacing": "1",
+			"space_before": "0",
+			"indent_left": "1.5",
+			"indent_right": "7.5",
+			"next_element": "General"
+		},
+		{
+			"name": "Scene Heading",
+			"align": "left",
+			"spacing": "1",
+			"space_before": "1",
+			"indent_left": "1.5",
+			"indent_right": "7.5",
+			"next_element": "Action",
+			"style": {
+					"text-transform": "uppercase",
+			}
+		}
+	]
+}
