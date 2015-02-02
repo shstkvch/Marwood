@@ -136,21 +136,6 @@ $(function() {
 			// todo: ghost autocomplete selection
 		}
 
-		// override default ALT key behaviour (for switching between characters)
-		if(e.which == 18) {
-			e.preventDefault();
-
-			if(application_state == "character_chooser") {
-				// ...
-				switchCharacter(e.shiftKey);
-
-			} else if (application_state == "scene_chooser") {
-				// ...
-			}
-
-			// not doing anything
-		}
-
 		// override left bracket key behaviour (for adding V.O. etc to char names)
 		if(e.which == 57) {
 			// TODO: override the bracket behaviour (and check that keycode is right)
@@ -177,6 +162,24 @@ $(function() {
 
 
 		$(".chooser.from-right").removeClass("visible");
+
+		// override default ALT key behaviour (for switching between characters)
+
+		// note - this must be in keyup b/c it breaks ALT + backspace (delete words)
+		// otherwise
+		if(e.which == 18) {
+			e.preventDefault();
+
+			if(application_state == "character_chooser") {
+				// ...
+				switchCharacter(e.shiftKey);
+
+			} else if (application_state == "scene_chooser") {
+				// ...
+			}
+
+			// not doing anything
+		}
 
 		// special cases -- show HUD on right for certain elements
 		if(element_type == "character" || element_type == "dialogue") {
@@ -210,8 +213,17 @@ $(function() {
 
 						$dom_element.attr('data-ghost-text', partner_name);
 						$dom_element.attr('data-character-index', $possible_partner.attr("data-character-index"));
+					} else if(!$possible_partner.hasClass('character')
+						&& !$dom_element.attr('data-ghost-text')) {
+
+						// there's no partner, pick a default character
+
+						$dom_element.attr('data-ghost-text', known_characters[0]);
+						$dom_element.attr('data-character-index', 0);
 					} else if ($dom_element.attr('data-ghost-text')) {
-						// ..
+
+						// do nothing
+
 					}
 
 				}
@@ -321,6 +333,8 @@ $(function() {
 	function switchElementType(reverse) {
 		var $dom_element = getActiveDomElement();
 
+		$dom_element.attr('data-ghost-text', '');
+
 		if(reverse) {
 			var step = -1;
 		} else {
@@ -415,7 +429,8 @@ $(function() {
 				// found it
 
 				$dom_element.prev().text(new_name)
-					.attr('data-character-index', active_character);
+					.attr('data-character-index', active_character)
+					.attr('data-ghost-text', '');
 
 				$dom_element_to_flash = $dom_element.prev();
 

@@ -2709,20 +2709,20 @@ div.pages {
   div.pages .page {
     border-top: 0;
     margin: auto;
-    padding: 66.9375px 111.5625px;
-    width: 595px;
-    height: 842px; }
+    padding: 100.40625px 167.34375px;
+    width: 892.5px;
+    height: 1263px; }
     div.pages .page meta.maximum-inner-height {
-      height: 708.125px; }
+      height: 1062.1875px; }
     div.pages .page, div.pages .page p {
-      font-size: 12px;
+      font-size: 18px;
       font-family: Courier, monospace;
       line-height: 200%;
       outline: none;
       color: #e6e6e6; }
     div.pages .page p {
       margin: 0;
-      margin-bottom: 12.39583px;
+      margin-bottom: 18.59375px;
       text-align: left;
       position: relative; }
       div.pages .page p:after {
@@ -2749,17 +2749,17 @@ div.pages {
       /*!marwood-next: "dialogue"*/ }
     div.pages .page p.character, div.pages .page p.character:after {
       font-weight: bold !important;
-      padding-left: 148.75px !important;
+      padding-left: 223.125px !important;
       padding-right: 0px !important;
       margin-bottom: 0 !important;
       text-transform: uppercase;
       /*!marwood-next: "action"*/ }
     div.pages .page p.dialogue, div.pages .page p.dialogue:after {
-      padding-left: 74.375px !important;
-      padding-right: 74.375px !important;
+      padding-left: 111.5625px !important;
+      padding-right: 111.5625px !important;
       /*!marwood-next: "action"*/ }
     div.pages .page p.parenthetical, div.pages .page p.parenthetical:after {
-      padding-left: 111.5625px !important;
+      padding-left: 167.34375px !important;
       padding-right: 0px !important;
       margin-bottom: 0;
       /*!marwood-next: "dialogue"*/ }

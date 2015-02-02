@@ -21,10 +21,13 @@ Currently working:
 * Sexy dark interface that's easy on the eye.
 * All of the basic elements from Final Draft are implemented and kind of work
 * Shoddy keyboard interface - hit tab to switch element type, hit enter to create new elements.
-* Save projects down to a JSON file that won't open in anything else, or even this program
+* Save/load projects
 * "Intelligent" guesses about which element you want to use next. For example, if you have two chunks of dialogue in a row, we assume that's a conversation between characters and your next element will automatically be a character element.
 * Autocorrect - character names are automatically corrected to upper case
   in action and general elements
+* Quick character switching/autosuggest (press the ALT key from any dialogue or character block)
+* Conversation detection - automatically picks likely character names if characters
+  seem to be in a conversation
 * Several exciting, usability-crippling bugs
 
 Near future:
@@ -33,7 +36,7 @@ Near future:
 * PDF rendering (maybe with pdf.js?)
 * Zoom
 * Autocomplete for character names & locations
-* File load functionality (!)
+* ~File load functionality (!)~
 * Some kind of login system so I can work on scripts with my writing partner without faffing around sending emails to each other at 5am
 
 Someday:
