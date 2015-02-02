@@ -1,4 +1,5 @@
 $(function() {
+	var marwood_version = "0.02";
 	var element_types = ["scene-heading",  "action", "character", "dialogue",
 											 "parenthetical", "transition",
 											 "shot", "general"];
@@ -426,7 +427,7 @@ $(function() {
 		}
 	}
 
-	function createNewElement(new_element_type, $element_to_insert_after) {
+	function createNewElement(new_element_type, $element_to_insert_after, text, char_index) {
 		// create a new element of the specified type & punt it into
 		// the page
 		var text_override = ""; // text to set for the new element
@@ -441,7 +442,11 @@ $(function() {
 		$new_element = $(document.createElement("p"));
 
 		// pop it into the dom
-		$element_to_insert_after.after($new_element);
+		if($element_to_insert_after) {
+			$element_to_insert_after.after($new_element);
+		} else {
+			$('div.page').append($new_element);
+		}
 
 		// special case stuff
 		if(new_element_type == "parenthetical") {
@@ -455,6 +460,15 @@ $(function() {
 
 		// set the element class
 		$new_element.addClass(new_element_type);
+
+		// when laoding in from a file we need to set text & char index
+		if(text) {
+			text_override = text;
+		}
+
+		if(char_index) {
+			$new_element.attr('data-character-index', char_index);
+		}
 
 		if(!text_override) {
 			// ... and add an invisible character so blank elements work ...
@@ -550,20 +564,28 @@ $(function() {
 
 		var template = {
 			meta: {
-				title: script_title
+				title: script_title,
+				marwood_version: undefined
 			},
-			elements: []
+			elements: [],
+			known_characters: []
 		};
 
 		// set the title
 		template.meta.title = script_title;
+
+		// set the version number
+		template.meta.marwood_version = marwood_version;
+
+		template.known_characters = known_characters;
 
 		// go through every page
 		$(".page").each(function(page_index, page) {
 			$(page).find('p').each(function(index, element) {
 				template.elements[index] = {
 					element_type: $(element).attr('class'),
-					text: $(element).text()
+					text: $(element).text(),
+					character_index: $(element).attr('data-character-index')
 				}
 			});
 		});
@@ -574,9 +596,43 @@ $(function() {
 		saveAs(blob, script_title + '.marwood');
 	}
 
-	function loadScript() {
-		
+	function loadScript(e) {
+		// TODO: redo all this properly, and load in the known characters
+
+		var reader = new FileReader();
+		reader.onload = function() {
+			var script_raw = reader.result;
+
+			// parse into json
+
+			var script = JSON.parse(script_raw);
+
+			if(script.meta) {
+				// seems fine then
+
+				if(!script.meta.marwood_version) {
+					alert('Sorry, can\'t load it. It doesn\'t look like a marwood file.');
+					return;
+				}
+
+				// load it into the DOM
+				script_title = script.meta.title;
+
+				$('h1.screenplay-name').text(script_title);
+
+				$(script.elements).each(function(i,element) {
+					createNewElement(element.element_type, undefined, element.text, undefined);
+				});
+			}
+		}
+
+		// now read it
+		reader.readAsText(e.target.files[0]);
 	}
+
+	$('input.file-chooser').change(function(e) {
+		loadScript(e);
+	});
 
 	function getActiveDomElement() {
 		var $dom_element = $(document.getSelection().anchorNode.parentNode);

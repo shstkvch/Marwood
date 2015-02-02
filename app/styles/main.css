@@ -2607,7 +2607,7 @@ body {
     padding-right: 0.9375rem;
     width: 33.33333%;
     float: left; }
-    .wrapper header .toolbar a.toolbar-button {
+    .wrapper header .toolbar .toolbar-button {
       width: 70px;
       height: 70px;
       background: none;
@@ -2616,11 +2616,20 @@ body {
       padding-top: 20px;
       float: right;
       border-left: 1px solid #363636;
+      position: relative;
       color: #363636; }
-      .wrapper header .toolbar a.toolbar-button:first-of-type {
+      .wrapper header .toolbar .toolbar-button:first-of-type {
         border-right: 1px solid #363636; }
-      .wrapper header .toolbar a.toolbar-button:hover {
+      .wrapper header .toolbar .toolbar-button:hover {
         color: #fff; }
+      .wrapper header .toolbar .toolbar-button input[type="file"] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 70px;
+        width: 70px;
+        z-index: 9;
+        opacity: 0; }
 .wrapper div.hud div.chooser {
   background: #101010;
   z-index: 999999;
