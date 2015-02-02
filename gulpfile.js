@@ -83,12 +83,19 @@ gulp.task('default', ['clean'], function () {
 // set up nwbuilder
 var nw = new NwBuilder({
   files: './**',
-  platforms: ['win', 'osx', 'linux']
+  platforms: ['win', 'osx', 'linux'],
+  macZip: true,
+  buildType: "versioned"
 });
 
 // nwbuild
 gulp.task('nwrun', ['wiredep', 'build'], function() {
   return nw.run().catch(function(err) {
+    gutil.log('nwbuild:', err);
+  });
+});
+gulp.task('nwbuild', ['wiredep', 'build'], function() {
+  return nw.build().catch(function(err) {
     gutil.log('nwbuild:', err);
   });
 });

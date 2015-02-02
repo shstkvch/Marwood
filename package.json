@@ -1,7 +1,8 @@
 {
   "name": "marwood",
-  "version": "0.2.0",
+  "version": "0.0.2",
   "main": "./app/index.html",
+  "repository": "https://github.com/daffingtons/Marwood",
   "window": {
     "title": "Marwood",
     "frame": true,
