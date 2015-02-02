@@ -16,10 +16,12 @@ $(function() {
 	$("div.page").focus();
 
 	// every keyup in the editor
-	$("div.page").keypress(function(e) {
+	$("body").on('keydown', 'div.page', function(e) {
 		// establish what element we're in
 		var $dom_element = getActiveDomElement();
 		var element_type = $dom_element.attr("class");
+
+		console.log(e);
 
 		// override default tab behaviour
 		if(e.which == 9) {
@@ -68,15 +70,11 @@ $(function() {
 				}
 
 				// update the data-character-id for this element
-				var character_index = known_characters.indexOf(character_name_clean);
+				var character_index = known_characters.indexOf(character_name_clean.toUpperCase());
 				$dom_element.attr('data-character-index', character_index);
 
 				updateKnownCharactersHud();
 
-				// are in chooser mode? if so, user just made a choice by hitting enter
-				if(application_state == "character_chooser") {
-					//alert('Chose!');
-				}
 			} else if (element_type == "parenthetical") {
 				// after a parenthetical, insert a dialogue
 
@@ -100,7 +98,7 @@ $(function() {
 				// update the data-character-id for this element
 				var character_name = $dom_element.prev('.character').text();
 				var character_name_clean = cleanElementText(character_name);
-				var character_index = known_characters.indexOf(character_name_clean);
+				var character_index = known_characters.indexOf(character_name_clean.toUpperCase());
 
 				$dom_element.attr('data-character-index', character_index);
 
@@ -154,6 +152,7 @@ $(function() {
 		updateElementHud();
 		updateKnownCharactersHud();
 
+
 		$(".chooser.from-right").removeClass("visible");
 
 		// special cases -- show HUD on right for certain elements
@@ -174,6 +173,7 @@ $(function() {
 			if(element_type == "character" && isBlankElement($dom_element)) {
 				console.log('ghosting...');
 			}
+
 		} else {
 			// back to the default application state
 
@@ -210,7 +210,6 @@ $(function() {
 		}
 
 	});
-
 
 	// general functions
 	function cleanupPage($page, after_paste) {
@@ -281,6 +280,7 @@ $(function() {
 		}
 
 		setActiveElementIndex(active_element_type + step);
+		updateElementHud();
 	}
 
 	function setActiveElementIndex(element_index) {
@@ -332,7 +332,9 @@ $(function() {
 	}
 
 	function switchCharacter(reverse) {
+
 		var $dom_element = getActiveDomElement();
+		var active_character = $dom_element.attr('data-character-index');
 
 		if(reverse) {
 			var step = -1;
@@ -349,12 +351,16 @@ $(function() {
 			// this is it!
 			$dom_element.text(new_name)
 				.attr('data-character-index', active_character);
-				// TODO - update dialogue char index too
+
+			if($dom_element.next().hasClass('dialogue')) {
+				$dom_element.next()
+					.attr('data-character-index', active_character);
+			}
 
 		} else if($dom_element.hasClass('dialogue')) {
 			// find the character element for this dialogue
 
-			if($dom_element.prev().hasClass('dialogue')) {
+			if($dom_element.prev().hasClass('character')) {
 				// found it
 
 				$dom_element.prev().text(new_name)
@@ -366,6 +372,8 @@ $(function() {
 				// TODO: traverse until we find parent character element
 			}
 		}
+
+		updateKnownCharactersHud();
 	}
 
 	function setActiveCharacterIndex(character_index) {
@@ -375,9 +383,7 @@ $(function() {
 		if(character_index == -1) {
 			character_index = known_characters.length -1;
 		}
-		active_character = character_index;
-
-		console.log('set active character to', character_index);
+		$dom_element.attr('data-character-index', character_index);
 	}
 
 	function updateElementHud() {
@@ -400,8 +406,12 @@ $(function() {
 			);
 		}
 
-		$('.character-chooser ul li:eq(' + active_character + ')')
-			.addClass('highlight');
+		// update the active character
+		var active_character_on_element = $dom_element.attr('data-character-index');
+		if (active_character_on_element) {;
+			$('.character-chooser ul li:eq(' + active_character_on_element + ')')
+				.addClass('highlight');
+		}
 	}
 
 	function checkElementsExist() {
