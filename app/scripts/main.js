@@ -145,6 +145,8 @@ $(function() {
 	$("div.pages").on("keyup focus click", function(e) {
 		// establish what element we're in
 		var $dom_element = getActiveDomElement();
+		var $active_page = getActivePage();
+
 		var element_type = $dom_element.attr("class");
 
 		/// GENERAL ///
@@ -241,29 +243,35 @@ $(function() {
 		console.log($dom_element.html());
 	});
 
-	$("div.pages").on('change', 'div.page', function() {
+	$("div.pages").change(function() {
 		// every time the page changes, check we're not over
 		// the inner height limit. if we are then we have to
 		// move as much as possible to the next page.
 
-		var $elements_to_move = checkPageInnerHeight($(this));
+		var $dom_element = getActiveDomElement();
+
+		console.log('page change dom elem', $dom_element);
+
+		var $page = $dom_element.parent();
+
+		var $elements_to_move = checkPageInnerHeight($page);
 
 		if($elements_to_move) {
 
-			if($(this).next().is(':empty')) {
-				var $new_page = $(this).next();
+			if($page.next().is(':empty')) {
+				var $new_page = $page.next();
 			} else {
 				var $new_page = $(document.createElement('div'));
 			}
 
 			$new_page.attr('class', 'page');
 
-			$(this).after($new_page);
+			$page.after($new_page);
 
 			$new_page.append($elements_to_move);
 		}
 
-		cleanupPage($(this));
+		cleanupPage($($page));
 	});
 
 	// copy & paste
@@ -377,9 +385,9 @@ $(function() {
 		$dom_element.attr("class", element_types[element_index]);
 
 		// flash the element to indicate the element type has changed
-		$dom_element.stop()
-			.css({color: "#ff8c44"})
-			.animate({color: "#E6E6E6"}, 200);
+		//$dom_element.stop()
+		//	.css({color: "#ff8c44"})
+		//	.animate({color: "#E6E6E6"}, 200);
 
 		return element_types[element_index];
 	}
@@ -455,11 +463,11 @@ $(function() {
 		}
 
 		// flash the dom element
-		if($dom_element_to_flash) {
-			$dom_element_to_flash.stop()
-				.css({color: "#4479ff"})
-				.animate({color: "#E6E6E6"}, 200);
-		}
+		// if($dom_element_to_flash) {
+		// 	$dom_element_to_flash.stop()
+		// 		.css({color: "#4479ff"})
+		// 		.animate({color: "#E6E6E6"}, 200);
+		// }
 
 		updateKnownCharactersHud();
 	}
@@ -716,6 +724,10 @@ $(function() {
 	});
 
 	function getActiveDomElement() {
+		if(!document.getSelection().anchorNode) {
+			return $('.page p').first();
+		}
+
 		var $dom_element = $(document.getSelection().anchorNode.parentNode);
 
 		if($dom_element.hasClass('page')) {
@@ -727,6 +739,21 @@ $(function() {
 		}
 
 		return $dom_element;
+	}
+
+	function getActivePage() {
+		if(document.getSelection().anchorNode) {
+			var $dom_element = $(document.getSelection().anchorNode.parentNode);
+
+			if($dom_element.hasClass('page')) {
+				return $dom_element;
+			}
+
+			if($dom_element.parents('.page')) {
+				return $dom_element.parents('.page');
+			}
+		}
+		return $('.page p').first();
 	}
 
 	//// INTERFACE
