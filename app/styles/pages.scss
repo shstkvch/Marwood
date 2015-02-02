@@ -13,7 +13,7 @@ div.pages {
 
 		$font-size: 12px;
 
-		$page-scale: 1.2;
+		$page-scale: 1;
 		$one-inch: ($a4-width / 8) * $page-scale;
 
 		padding: $one-inch * .9 $one-inch * 1.5;
@@ -45,7 +45,8 @@ div.pages {
 				position: absolute;
 				opacity: .5;
 				left: 0;
-				display: none;
+				display: block;
+				top: 0;
 			}
 
 			// autocorrect stuff

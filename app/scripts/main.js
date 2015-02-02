@@ -3,6 +3,11 @@ $(function() {
 	var element_types = ["scene-heading",  "action", "character", "dialogue",
 											 "parenthetical", "transition",
 											 "shot", "general"];
+	var scene_heading_intros = ["INT.", "EXT.", "I/E."];
+	var scene_heading_locations = [];
+	var scene_heading_times = ["AFTERNOON", "CONTINUOUS", "DAY", "EVENING",
+											 "LATER", "MOMENTS LATER", "MORNING", "NIGHT",
+											 "THE NEXT DAY"];
 	var active_element_type = 0; // action
 	var last_character_name = "";
 	var page_max_inner_height = $("meta.maximum-inner-height").height();
@@ -12,7 +17,6 @@ $(function() {
 																		 // scene_chooser
 	var autocorrect_hints = true;
 	var known_characters = new Array; // every unique character element value
-	var active_character = 0;
 
 	$("div.page").focus();
 
@@ -29,11 +33,10 @@ $(function() {
 			e.preventDefault();
 
 			// if the element we're on is blank, do the switcheroo!
-			if(isBlankElement($dom_element)) {
+			//if(isBlankElement($dom_element)) {
 				switchElementType(e.shiftKey); // if shift is down then we go backwards
-			}
+			//}
 
-			console.log(isBlankElement($dom_element), $dom_element);
 		}
 
 		// override default enter key behaviour
@@ -54,6 +57,16 @@ $(function() {
 					return;
 				}
 
+				if(application_state == "character_chooser"
+					 && isBlankElement($dom_element))
+						{
+					// select the ghosted character and set the element text to it
+					var character_index = $dom_element.attr('data-character-index');
+					if(character_index) {
+						$dom_element.text(known_characters[character_index]);
+					}
+				}
+
 				if($dom_element.next().attr("class") == "dialogue") {
 					new_element_type = "parenthetical";
 				} else {
@@ -61,6 +74,10 @@ $(function() {
 				}
 
 				var character_name_clean = cleanElementText($dom_element.text().toLowerCase());
+
+				if(character_name_clean == "") {
+					return; // abandon it
+				}
 
 				if(known_characters.indexOf(character_name_clean.toUpperCase()) == -1) {
 					known_characters.push(character_name_clean.toUpperCase());
@@ -125,13 +142,18 @@ $(function() {
 
 			if(application_state == "character_chooser") {
 				// ...
-				switchCharacter();
+				switchCharacter(e.shiftKey);
 
 			} else if (application_state == "scene_chooser") {
 				// ...
 			}
 
 			// not doing anything
+		}
+
+		// override left bracket key behaviour (for adding V.O. etc to char names)
+		if(e.which == 57) {
+			// TODO: override the bracket behaviour (and check that keycode is right)
 		}
 	});
 
@@ -172,7 +194,30 @@ $(function() {
 			// are we on a blank character element?
 
 			if(element_type == "character" && isBlankElement($dom_element)) {
-				console.log('ghosting...');
+
+				if(known_characters.length) {
+
+					var $possible_partner = $dom_element.prev().prev().prev().prev();
+
+					if (  $possible_partner.hasClass('character')
+						&& $possible_partner.attr("data-character-index")
+						&& !$dom_element.attr('data-ghost-text')) {
+
+						console.log('found conversational partner');
+
+						// found a conversation partner
+						partner_name = known_characters[$possible_partner.attr("data-character-index")];
+
+						$dom_element.attr('data-ghost-text', partner_name);
+						$dom_element.attr('data-character-index', $possible_partner.attr("data-character-index"));
+					} else if ($dom_element.attr('data-ghost-text')) {
+						// ..
+					}
+
+				}
+
+			} else {
+				$dom_element.removeAttr('data-ghost-text');
 			}
 
 		} else {
@@ -248,6 +293,8 @@ $(function() {
 				.addClass('general');
 		}
 
+		// TODO: remove any non-existent characters from the known_characters array
+
 		// remove any blank Ps
 		$page.find("p:empty").remove();
 	}
@@ -302,32 +349,10 @@ $(function() {
 
 		$dom_element.attr("class", element_types[element_index]);
 
-		// special case ghosting etc
-		var new_ghost_text = "";
-		if(element_types[element_index] == "character") {
-			// if we have a suggested character name, ghost it
-			console.log("looking for partner");
-
-			var $possible_partner = $dom_element.prev().prev().prev().prev()	;
-
-			if (  $possible_partner.hasClass('character')
-				 && $possible_partner.attr("data-character-index")) {
-
-				console.log('found conversational partner');
-
-				// found a conversation partner
-				partner_name = known_characters[$possible_partner.attr("data-character-index")];
-
-				new_ghost_text = partner_name;
-			}
-
-		} else if (element_types[element_index] == "scene-heading") {
-			new_ghost_text = "INT. Bridge - Day";
-		} else if (element_types[element_index] == "transition") {
-			new_ghost_text = "CUT TO:";
-		}
-
-		$dom_element.attr("data-ghost-text", new_ghost_text);
+		// flash the element to indicate the element type has changed
+		$dom_element.stop()
+			.css({color: "#ff8c44"})
+			.animate({color: "#E6E6E6"}, 200);
 
 		return element_types[element_index];
 	}
@@ -335,7 +360,8 @@ $(function() {
 	function switchCharacter(reverse) {
 
 		var $dom_element = getActiveDomElement();
-		var active_character = $dom_element.attr('data-character-index');
+
+		var active_character = $dom_element.attr('data-character-index') - 0;
 
 		if(reverse) {
 			var step = -1;
@@ -343,19 +369,43 @@ $(function() {
 			var step = 1;
 		}
 
-		setActiveCharacterIndex(active_character + step);
+		active_character = (active_character + step) % known_characters.length;
+
+		console.log(active_character, known_characters.length);
+
+		if(active_character == -1) {
+			active_character = known_characters.length -1;
+		}
+
+		$dom_element.attr('data-character-index', active_character);
 
 		// now update the character name of the current dom element
 		var new_name = known_characters[active_character];
 
-		if($dom_element.hasClass('character')) {
-			// this is it!
-			$dom_element.text(new_name)
-				.attr('data-character-index', active_character);
+		// we do a wee flash from blue to white to signify it changing
+		// find the element we need to flash
+		var $dom_element_to_flash = undefined;
 
-			if($dom_element.next().hasClass('dialogue')) {
-				$dom_element.next()
+		if($dom_element.hasClass('character')) {
+
+			if($dom_element.attr('data-ghost-text')) {
+
+				// ghost if we have ghost text
+				$dom_element.attr('data-ghost-text', new_name);
+
+			} else {
+
+				// change the text to the character name
+				$dom_element.text(new_name)
 					.attr('data-character-index', active_character);
+
+				$dom_element_to_flash = $dom_element;
+
+				if($dom_element.next().hasClass('dialogue')) {
+					$dom_element.next()
+						.attr('data-character-index', active_character);
+				}
+
 			}
 
 		} else if($dom_element.hasClass('dialogue')) {
@@ -367,6 +417,8 @@ $(function() {
 				$dom_element.prev().text(new_name)
 					.attr('data-character-index', active_character);
 
+				$dom_element_to_flash = $dom_element.prev();
+
 				// update the active character for this too
 				$dom_element.attr('data-character-index', active_character);
 			} else {
@@ -374,17 +426,14 @@ $(function() {
 			}
 		}
 
-		updateKnownCharactersHud();
-	}
-
-	function setActiveCharacterIndex(character_index) {
-		var $dom_element = getActiveDomElement();
-
-		character_index = character_index % known_characters.length;
-		if(character_index == -1) {
-			character_index = known_characters.length -1;
+		// flash the dom element
+		if($dom_element_to_flash) {
+			$dom_element_to_flash.stop()
+				.css({color: "#4479ff"})
+				.animate({color: "#E6E6E6"}, 200);
 		}
-		$dom_element.attr('data-character-index', character_index);
+
+		updateKnownCharactersHud();
 	}
 
 	function updateElementHud() {
@@ -715,3 +764,14 @@ String.prototype.replaceAll = function(strReplace, strWith) {
 		var reg = new RegExp(strReplace, 'ig');
 		return this.replace(reg, strWith);
 };
+
+function moveCursorToEnd(el) {
+		if (typeof el.selectionStart == "number") {
+				el.selectionStart = el.selectionEnd = el.value.length;
+		} else if (typeof el.createTextRange != "undefined") {
+				el.focus();
+				var range = el.createTextRange();
+				range.collapse(false);
+				range.select();
+		}
+}

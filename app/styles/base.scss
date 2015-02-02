@@ -171,15 +171,22 @@ body {
 			}
 		}
 		div.character-chooser {
-			background: darken($main-tone, 5%);
 			width: 200px;
-			position: fixed;
 			bottom: 55px;
 			right: 55px;
 
 			ul li.highlight {
 				//background: linear-gradient(lighten($highlight-tone-alt, 15%), $highlight-tone-alt);
 				color: $highlight-tone-alt-2;
+			}
+		}
+		div.scene-heading-chooser {
+			right: 55px;
+			bottom: 55px;
+			width: 200px;
+
+			ul li.highlight {
+				color: $highlight-tone-alt-3;
 			}
 		}
 	}
