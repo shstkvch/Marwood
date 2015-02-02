@@ -2,12 +2,14 @@
 // generated on 2015-01-28 using generator-gulp-foundation 0.0.3
 
 var gulp = require('gulp');
+var NwBuilder = require('node-webkit-builder');
 var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var gutil = require('gulp-util');
 
 // load plugins
 var $ = require('gulp-load-plugins')();
+
 
 gulp.task('styles', function () {
     return gulp.src('app/styles/main.scss')
@@ -76,6 +78,19 @@ gulp.task('build', ['html', 'images', 'fonts']);
 
 gulp.task('default', ['clean'], function () {
     gulp.start('build');
+});
+
+// set up nwbuilder
+var nw = new NwBuilder({
+  files: './**',
+  platforms: ['win', 'osx', 'linux']
+});
+
+// nwbuild
+gulp.task('nwrun', ['wiredep', 'build'], function() {
+  return nw.run().catch(function(err) {
+    gutil.log('nwbuild:', err);
+  });
 });
 
 gulp.task('serve', ['styles'], function () {
