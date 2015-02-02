@@ -59,7 +59,9 @@ body {
 				padding-top: 20px;
 				float: right;
 				border-left: 1px solid $controls-1;
-				border-right: 1px solid $controls-1;
+				&:first-of-type {
+					border-right: 1px solid $controls-1;
+				}
 				color: $controls-1;
 
 				&:hover {

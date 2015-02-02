@@ -574,6 +574,10 @@ $(function() {
 		saveAs(blob, script_title + '.marwood');
 	}
 
+	function loadScript() {
+		
+	}
+
 	function getActiveDomElement() {
 		var $dom_element = $(document.getSelection().anchorNode.parentNode);
 
@@ -593,6 +597,10 @@ $(function() {
 	// save button
 	$('a.toolbar-button.save').click(function() {
 		saveScript();
+	});
+
+	$('a.toolbar-button.load').click(function() {
+		loadScript();
 	});
 
 	$('h1.screenplay-name').click(function() {

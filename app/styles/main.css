@@ -2616,8 +2616,9 @@ body {
       padding-top: 20px;
       float: right;
       border-left: 1px solid #363636;
-      border-right: 1px solid #363636;
       color: #363636; }
+      .wrapper header .toolbar a.toolbar-button:first-of-type {
+        border-right: 1px solid #363636; }
       .wrapper header .toolbar a.toolbar-button:hover {
         color: #fff; }
 .wrapper div.hud div.chooser {
