@@ -10,7 +10,7 @@ $(function() {
 											 "THE NEXT DAY"];
 	var active_element_type = 0; // action
 	var last_character_name = "";
-	var page_max_inner_height = $("meta.maximum-inner-height").height();
+	window.page_max_inner_height = $("meta.maximum-inner-height").height();
 	var default_script_title = "Untitled Script";
 	var script_title = default_script_title;
 	var application_state = "default"; // default, character_chooser,
@@ -18,10 +18,10 @@ $(function() {
 	var autocorrect_hints = true;
 	var known_characters = new Array; // every unique character element value
 
-	$("div.page").focus();
+	$("div.pages").children().first().focus();
 
 	// every keyup in the editor
-	$("body").on('keydown', 'div.page', function(e) {
+	$("body").on('keydown', 'div.pages', function(e) {
 		// establish what element we're in
 		var $dom_element = getActiveDomElement();
 		var element_type = $dom_element.attr("class");
@@ -142,7 +142,7 @@ $(function() {
 		}
 	});
 
-	$("div.page").on("keyup focus click", function(e) {
+	$("div.pages").on("keyup focus click", function(e) {
 		// establish what element we're in
 		var $dom_element = getActiveDomElement();
 		var element_type = $dom_element.attr("class");
@@ -241,20 +241,33 @@ $(function() {
 		console.log($dom_element.html());
 	});
 
-	$("div.page").change(function() {
+	$("div.pages").on('change', 'div.page', function() {
 		// every time the page changes, check we're not over
 		// the inner height limit. if we are then we have to
 		// move as much as possible to the next page.
 
-		if(checkPageInnerHeight()) {
-			// ...
+		var $elements_to_move = checkPageInnerHeight($(this));
+
+		if($elements_to_move) {
+
+			if($(this).next().is(':empty')) {
+				var $new_page = $(this).next();
+			} else {
+				var $new_page = $(document.createElement('div'));
+			}
+
+			$new_page.attr('class', 'page');
+
+			$(this).after($new_page);
+
+			$new_page.append($elements_to_move);
 		}
 
 		cleanupPage($(this));
 	});
 
 	// copy & paste
-	$('div.page').on('cut copy paste', function(e) {
+	$('div.pages').on('cut copy paste', function(e) {
 		var clipboard_data = e.originalEvent.clipboardData;
 
 		if(e.type == "copy" || e.type == "cut") {
@@ -319,13 +332,13 @@ $(function() {
 		// another element within a contenteditable. maybe there's
 		// a way to actually move the caret?
 
-		$("div.page").removeAttr("contenteditable");
+		$("div.pages").removeAttr("contenteditable");
 		$element.attr("contenteditable", "").focus();
 
 		// TODO:  move the caret to the end of the element
 
 		setTimeout(function() {
-			$("div.page").attr("contenteditable", "").focus();
+			$("div.pages").attr("contenteditable", "").focus();
 			$element.removeAttr("contenteditable");
 		}, 50);
 	}
@@ -555,18 +568,20 @@ $(function() {
 		// checks the innerheight of a page to see
 		// if it's over the acceptable limit.
 		//
-		// if it is, then a pagebreak is needed & we return the element
-		// that needs chopped
-		var inner_height = 0;
+		// if it is, then a pagebreak is needed & we return the elements
+		// that need moved to the next page
 
-		$('.page p').each(function(i,element) {
-			inner_height += $(element).outerHeight(true);
-		//	element_offsets[i] = $(element).position().top;
+		var elements_to_move = new Array;
+
+		$page.find('p').each(function(i,element) {
+			var element_offset = $(element).position().top;
+
+			if(element_offset > page_max_inner_height) {
+			 	elements_to_move.push(element);
+			}
 		});
 
-		if(inner_height > page_max_inner_height) {
-
-		}
+		return $(elements_to_move);
 	}
 
 	function isBlankElement($element) {
@@ -670,6 +685,8 @@ $(function() {
 			// parse into json
 
 			var script = JSON.parse(script_raw);
+
+			$('div.page').empty();
 
 			if(script.meta) {
 				// seems fine then

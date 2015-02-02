@@ -1,11 +1,12 @@
 div.pages {
 	margin: 70px auto;
+	outline: none;
 
 	// an individual page
 	.page {
-		//border: 1px solid rgb(84,84,84);
+		border: 1px solid rgb(84,84,84);
 		border-top: 0;
-		//border-bottom: 1px dashed rgb(84,84,84);
+		border-bottom: 1px dashed rgb(84,84,84);
 		margin: auto;
 
 		$a4-width: 595px;
@@ -13,7 +14,7 @@ div.pages {
 
 		$font-size: 12px;
 
-		$page-scale: 1.5;
+		$page-scale: 1;
 		$one-inch: ($a4-width / 8) * $page-scale;
 
 		padding: $one-inch * .9 $one-inch * 1.5;
